@@ -34,10 +34,14 @@ protected:
 	TObjectPtr<UCameraComponent> CameraComp;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
-	TSubclassOf<AActor> PlayerWeapon;
+	TSubclassOf<AActor> MeleeWeapon;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
+	TSubclassOf<AActor> GunWeapon;
+	UPROPERTY()
+	TMap<EPlayerBattleState, AActor*> WeaponMap;
 	
 	void Move(const FInputActionValue& Value);
-	void SpawnWeapon();
+	void InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleState BattleState);
 	void SelectWeapon(const FInputActionValue& Value);
 	
 private:

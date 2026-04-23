@@ -34,10 +34,9 @@ AMyPlayer::AMyPlayer()
 void AMyPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-	if (PlayerWeapon)
-	{
-		SpawnWeapon();
-	}
+	
+	InitializeWeapon(MeleeWeapon,EPlayerBattleState::Melee);
+	InitializeWeapon(GunWeapon,EPlayerBattleState::Gun);
 }
 
 void AMyPlayer::Tick(float DeltaTime)
@@ -82,38 +81,54 @@ void AMyPlayer::Move(const FInputActionValue& Value)
 	
 }
 
-void AMyPlayer::SpawnWeapon()
+void AMyPlayer::InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleState BattleState)
 {
-	if (PlayerWeapon)
+	if (WeaponClass)
 	{
-		AActor* SpawnActorInst = GetWorld()->SpawnActor<AActor>(PlayerWeapon,FVector::ZeroVector,FRotator::ZeroRotator);	
-		if (SpawnActorInst)
+		FActorSpawnParameters SpawnParam;
+		SpawnParam.Owner = this;
+		
+		AActor* SpawnedWeapon = GetWorld()->SpawnActor<AActor>(WeaponClass,SpawnParam);
+		
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,true);
+		
+		FName SocketName = (BattleState == EPlayerBattleState::Melee) ? TEXT("WeaponSocket") : TEXT("GunSocket");
+		
+		SpawnedWeapon->AttachToComponent(GetMesh(),AttachmentRules,SocketName);		
+		
+		WeaponMap.Add(BattleState,SpawnedWeapon);
+		
+		if (PlayerBattleState == BattleState)
 		{
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,true);
-			SpawnActorInst->AttachToComponent(GetMesh(),AttachmentRules,TEXT("WeaponSocket"));
+			SpawnedWeapon->SetActorHiddenInGame(false);
+		}
+		else
+		{
+			SpawnedWeapon->SetActorHiddenInGame(true);
 		}
 	}
 }
+
 
 void AMyPlayer::SelectWeapon(const FInputActionValue& Value)
 {
 	int32 SlotIndex = static_cast<int>(Value.Get<float>());
 	
-	switch (SlotIndex)
+	EPlayerBattleState NewState = (SlotIndex == 1) ? EPlayerBattleState::Melee : EPlayerBattleState::Gun;
+	
+	// 같은 키를 눌렀을때
+	if (PlayerBattleState == NewState) return;
+	
+	// 기존 무기가 있을경우 숨겨야함
+	if (WeaponMap.Contains(PlayerBattleState))
 	{
-	case 1:
-		{
-			PlayerBattleState = EPlayerBattleState::Melee;
-			UE_LOG(LogTemp,Warning,TEXT("근접 무기 모드"));
-		}
-		break;
-	case 2:
-		{
-			PlayerBattleState = EPlayerBattleState::Gun;
-			UE_LOG(LogTemp,Warning,TEXT("원거리 무기 모드"));
-		}
-		break;
-	default:
-		break;
+		WeaponMap[PlayerBattleState]->SetActorHiddenInGame(true);
 	}
+	
+	if (WeaponMap.Contains(NewState))
+	{
+		WeaponMap[NewState]->SetActorHiddenInGame(false);
+		PlayerBattleState = NewState;
+	}
+	
 }
