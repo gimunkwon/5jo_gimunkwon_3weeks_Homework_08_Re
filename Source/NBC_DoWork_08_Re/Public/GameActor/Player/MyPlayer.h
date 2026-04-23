@@ -8,6 +8,14 @@ struct FInputActionValue;
 class UCameraComponent;
 class USpringArmComponent;
 
+UENUM(BlueprintType)
+enum class EPlayerBattleState : uint8
+{
+	Melee,
+	Gun
+};
+
+
 UCLASS()
 class NBC_DOWORK_08_RE_API AMyPlayer : public ACharacter
 {
@@ -23,8 +31,15 @@ protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Camera")
 	TObjectPtr<UCameraComponent> CameraComp;
 	
-	void Move(const FInputActionValue& Value);
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
+	TSubclassOf<AActor> PlayerWeapon;
 	
+	void Move(const FInputActionValue& Value);
+	void SpawnWeapon();
+	void SelectWeapon(const FInputActionValue& Value);
+	
+private:
+	EPlayerBattleState PlayerBattleState;
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
