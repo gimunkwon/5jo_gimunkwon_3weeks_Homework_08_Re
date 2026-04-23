@@ -17,6 +17,8 @@ protected:
 	TObjectPtr<USceneComponent> SceneComp;
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Mesh")
 	TObjectPtr<UStaticMeshComponent> StaticMeshComp;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Attack")
+	float AttackDamage;
 	
 public:
 	virtual void Tick(float DeltaTime) override;

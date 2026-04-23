@@ -12,6 +12,8 @@ AMyWeapon::AMyWeapon()
 	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	StaticMeshComp->SetupAttachment(SceneComp);
 	StaticMeshComp->SetCollisionProfileName(TEXT("NoCollision"));
+	
+	AttackDamage = 0.f;
 }
 
 

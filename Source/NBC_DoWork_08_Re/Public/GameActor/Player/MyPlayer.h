@@ -23,6 +23,8 @@ class NBC_DOWORK_08_RE_API AMyPlayer : public ACharacter
 
 public:
 	AMyPlayer();
+	UFUNCTION(BlueprintCallable)
+	EPlayerBattleState GetPlayerBattleState() const {return PlayerBattleState;}
 protected:
 	virtual void BeginPlay() override;
 	
@@ -32,14 +34,28 @@ protected:
 	TObjectPtr<UCameraComponent> CameraComp;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
-	TSubclassOf<AActor> PlayerWeapon;
+	TSubclassOf<AActor> MeleeWeapon;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
+	TSubclassOf<AActor> GunWeapon;
+	UPROPERTY()
+	TMap<EPlayerBattleState, AActor*> WeaponMap;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animations")
+	TObjectPtr<UAnimMontage> AM_MeleeAttack;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animations")
+	TObjectPtr<UAnimMontage> AM_GunAttack;
 	
 	void Move(const FInputActionValue& Value);
-	void SpawnWeapon();
+	void InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleState BattleState);
 	void SelectWeapon(const FInputActionValue& Value);
+	void Attack();
+	
+	UFUNCTION()
+	void EndAttackMontage(UAnimMontage* Montage, bool bIsEnd);
 	
 private:
 	EPlayerBattleState PlayerBattleState;
+	bool bIsAttacking;
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
