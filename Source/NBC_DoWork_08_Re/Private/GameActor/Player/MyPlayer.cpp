@@ -3,6 +3,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
+#include "AI/NavigationSystemBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "NBC_DoWork_08_Re/Public/GameActor/Player/Controller/MyPlayerController.h"
 
@@ -73,6 +74,8 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AMyPlayer::Move(const FInputActionValue& Value)
 {
+	if (bIsAttacking) return;
+	
 	FVector MoveValue = Value.Get<FVector>();
 	
 	if (!FMath::IsNearlyZero(MoveValue.Y))
@@ -139,7 +142,31 @@ void AMyPlayer::SelectWeapon(const FInputActionValue& Value)
 
 void AMyPlayer::Attack()
 {
+	if (bIsAttacking) return;
 	UE_LOG(LogTemp,Warning,TEXT("플레이어 공격 시작"));
 	
+	UAnimInstance* MyAnimInst = GetMesh()->GetAnimInstance();
+	UAnimMontage* CurrentMontage = nullptr;
+	if (PlayerBattleState == EPlayerBattleState::Melee) CurrentMontage = AM_MeleeAttack;
+	else if (PlayerBattleState == EPlayerBattleState::Gun) CurrentMontage = AM_GunAttack;
+	
+	if (CurrentMontage)
+	{
+		bIsAttacking = true;
+		
+		GetCharacterMovement()->StopMovementImmediately();
+		MyAnimInst->Montage_Play(CurrentMontage);
+		
+		FOnMontageEnded EndMontage;
+		EndMontage.BindUObject(this, &AMyPlayer::EndAttackMontage);
+		MyAnimInst->Montage_SetEndDelegate(EndMontage,CurrentMontage);
+	}
 	
 }
+
+void AMyPlayer::EndAttackMontage(UAnimMontage* Montage, bool bIsEnd)
+{
+	bIsAttacking = false;
+	UE_LOG(LogTemp,Warning,TEXT("애님몽타주 종료 이동 가능!!"));
+}
+

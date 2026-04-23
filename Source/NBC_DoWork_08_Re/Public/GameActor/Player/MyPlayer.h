@@ -50,8 +50,12 @@ protected:
 	void SelectWeapon(const FInputActionValue& Value);
 	void Attack();
 	
+	UFUNCTION()
+	void EndAttackMontage(UAnimMontage* Montage, bool bIsEnd);
+	
 private:
 	EPlayerBattleState PlayerBattleState;
+	bool bIsAttacking;
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
