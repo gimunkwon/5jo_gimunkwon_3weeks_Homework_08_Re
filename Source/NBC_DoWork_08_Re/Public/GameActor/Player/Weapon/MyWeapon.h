@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Misc/MapErrors.h"
 #include "MyWeapon.generated.h"
 
 UCLASS()
@@ -10,6 +11,8 @@ class NBC_DOWORK_08_RE_API AMyWeapon : public AActor
 	GENERATED_BODY()
 public:
 	AMyWeapon();
+	
+	UStaticMeshComponent* GetWeaponMesh() const {return StaticMeshComp;}
 protected:
 	virtual void BeginPlay() override;
 	

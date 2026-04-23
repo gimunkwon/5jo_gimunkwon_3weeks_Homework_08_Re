@@ -4,6 +4,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "AI/NavigationSystemBase.h"
+#include "Engine/StaticMeshSocket.h"
+#include "GameActor/Player/Weapon/GunWeapon.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "NBC_DoWork_08_Re/Public/GameActor/Player/Controller/MyPlayerController.h"
 
@@ -161,6 +163,9 @@ void AMyPlayer::Attack()
 		GetCharacterMovement()->StopMovementImmediately();
 		MyAnimInst->Montage_Play(AM_MeleeAttack);
 		
+		//TODO:: MeleeWeapon 공격로직 
+		
+		
 		FOnMontageEnded EndMontage;
 		EndMontage.BindUObject(this, &AMyPlayer::EndAttackMontage);
 		MyAnimInst->Montage_SetEndDelegate(EndMontage,AM_MeleeAttack);
@@ -176,6 +181,21 @@ void AMyPlayer::Attack()
 			}
 			UE_LOG(LogTemp,Warning,TEXT("총 발사"));
 			LastFireTime = CurrentTime;
+			
+			//TODO:: 총알 발사 로직
+			if (WeaponMap.Contains(PlayerBattleState))
+			{
+				if (AGunWeapon* WeaponGun = Cast<AGunWeapon>(WeaponMap[PlayerBattleState]))
+				{
+					FVector StartPos = WeaponGun->GetWeaponMesh()->GetSocketLocation(TEXT("MuzzleSocket"));
+					FVector LaunchDir = WeaponGun->GetWeaponMesh()->GetSocketRotation(TEXT("MuzzleSocket")).Vector();
+					
+					float MaxDistance = 1000.f;
+					FVector EndPos = StartPos + (LaunchDir * MaxDistance);
+					
+					DrawDebugLine(GetWorld(),StartPos, EndPos,FColor::Red,false,0.5f,0,1.f);
+				}
+			}
 		}
 	}
 }
