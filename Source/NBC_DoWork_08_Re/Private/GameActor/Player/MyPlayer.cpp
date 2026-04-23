@@ -29,6 +29,9 @@ AMyPlayer::AMyPlayer()
 	bUseControllerRotationYaw = false;
 	
 	PlayerBattleState = EPlayerBattleState::Melee;
+	
+	FireRate = 0.2f;
+	LastFireTime = 0.f;
 }
 
 
@@ -65,7 +68,7 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 			
 			if (PC->IA_Attack)
 			{
-				EnhancedInputComp->BindAction(PC->IA_Attack,ETriggerEvent::Started,this,&AMyPlayer::Attack);
+				EnhancedInputComp->BindAction(PC->IA_Attack,ETriggerEvent::Triggered,this,&AMyPlayer::Attack);
 			}
 		}
 	}
@@ -119,6 +122,8 @@ void AMyPlayer::InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleS
 
 void AMyPlayer::SelectWeapon(const FInputActionValue& Value)
 {
+	if (bIsAttacking) return;
+	
 	int32 SlotIndex = static_cast<int>(Value.Get<float>());
 	
 	EPlayerBattleState NewState = (SlotIndex == 1) ? EPlayerBattleState::Melee : EPlayerBattleState::Gun;
@@ -142,26 +147,37 @@ void AMyPlayer::SelectWeapon(const FInputActionValue& Value)
 
 void AMyPlayer::Attack()
 {
-	if (bIsAttacking) return;
-	UE_LOG(LogTemp,Warning,TEXT("플레이어 공격 시작"));
-	
 	UAnimInstance* MyAnimInst = GetMesh()->GetAnimInstance();
-	UAnimMontage* CurrentMontage = nullptr;
-	if (PlayerBattleState == EPlayerBattleState::Melee) CurrentMontage = AM_MeleeAttack;
-	else if (PlayerBattleState == EPlayerBattleState::Gun) CurrentMontage = AM_GunAttack;
+	if (!MyAnimInst) return;
+	// UE_LOG(LogTemp,Warning,TEXT("플레이어 공격 시작"));
 	
-	if (CurrentMontage)
+	if (PlayerBattleState == EPlayerBattleState::Melee)
 	{
+		if (bIsAttacking) return;
+		if (!AM_MeleeAttack) return;
+		
 		bIsAttacking = true;
 		
 		GetCharacterMovement()->StopMovementImmediately();
-		MyAnimInst->Montage_Play(CurrentMontage);
+		MyAnimInst->Montage_Play(AM_MeleeAttack);
 		
 		FOnMontageEnded EndMontage;
 		EndMontage.BindUObject(this, &AMyPlayer::EndAttackMontage);
-		MyAnimInst->Montage_SetEndDelegate(EndMontage,CurrentMontage);
+		MyAnimInst->Montage_SetEndDelegate(EndMontage,AM_MeleeAttack);
 	}
-	
+	else if (PlayerBattleState == EPlayerBattleState::Gun)
+	{
+		float CurrentTime = GetWorld()->GetTimeSeconds();
+		if (CurrentTime - LastFireTime >= FireRate)
+		{
+			if (AM_GunAttack)
+			{
+				MyAnimInst->Montage_Play(AM_GunAttack);
+			}
+			UE_LOG(LogTemp,Warning,TEXT("총 발사"));
+			LastFireTime = CurrentTime;
+		}
+	}
 }
 
 void AMyPlayer::EndAttackMontage(UAnimMontage* Montage, bool bIsEnd)

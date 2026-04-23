@@ -45,6 +45,11 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animations")
 	TObjectPtr<UAnimMontage> AM_GunAttack;
 	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Combat")
+	float FireRate;
+	
+	float LastFireTime;
+	
 	void Move(const FInputActionValue& Value);
 	void InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleState BattleState);
 	void SelectWeapon(const FInputActionValue& Value);
