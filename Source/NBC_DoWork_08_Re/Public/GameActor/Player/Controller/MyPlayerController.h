@@ -20,6 +20,9 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Input")
 	TObjectPtr<UInputAction> IA_Move;
 	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="UI")
+	TSubclassOf<UUserWidget> Widget_HUD;
+	
 protected:
 	virtual void BeginPlay() override;
 };
