@@ -19,6 +19,9 @@ public:
 	TObjectPtr<UInputMappingContext> IMC_Default;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Input")
 	TObjectPtr<UInputAction> IA_Move;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Input")
+	TObjectPtr<UInputAction> IA_SelectBattleMode;
+	
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="UI")
 	TSubclassOf<UUserWidget> Widget_HUD;
