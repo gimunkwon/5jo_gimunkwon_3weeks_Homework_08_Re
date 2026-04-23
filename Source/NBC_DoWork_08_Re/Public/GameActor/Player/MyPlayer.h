@@ -40,9 +40,15 @@ protected:
 	UPROPERTY()
 	TMap<EPlayerBattleState, AActor*> WeaponMap;
 	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animations")
+	TObjectPtr<UAnimMontage> AM_MeleeAttack;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animations")
+	TObjectPtr<UAnimMontage> AM_GunAttack;
+	
 	void Move(const FInputActionValue& Value);
 	void InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleState BattleState);
 	void SelectWeapon(const FInputActionValue& Value);
+	void Attack();
 	
 private:
 	EPlayerBattleState PlayerBattleState;

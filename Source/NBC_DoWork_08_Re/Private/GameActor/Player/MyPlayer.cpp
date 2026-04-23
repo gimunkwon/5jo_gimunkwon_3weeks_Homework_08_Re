@@ -61,6 +61,11 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 			{
 				EnhancedInputComp->BindAction(PC->IA_SelectBattleMode,ETriggerEvent::Triggered,this,&AMyPlayer::SelectWeapon);
 			}
+			
+			if (PC->IA_Attack)
+			{
+				EnhancedInputComp->BindAction(PC->IA_Attack,ETriggerEvent::Started,this,&AMyPlayer::Attack);
+			}
 		}
 	}
 	
@@ -109,7 +114,6 @@ void AMyPlayer::InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleS
 	}
 }
 
-
 void AMyPlayer::SelectWeapon(const FInputActionValue& Value)
 {
 	int32 SlotIndex = static_cast<int>(Value.Get<float>());
@@ -130,5 +134,12 @@ void AMyPlayer::SelectWeapon(const FInputActionValue& Value)
 		WeaponMap[NewState]->SetActorHiddenInGame(false);
 		PlayerBattleState = NewState;
 	}
+	
+}
+
+void AMyPlayer::Attack()
+{
+	UE_LOG(LogTemp,Warning,TEXT("플레이어 공격 시작"));
+	
 	
 }
