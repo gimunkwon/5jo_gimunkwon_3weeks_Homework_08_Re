@@ -4,7 +4,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/PawnMovementComponent.h"
 #include "NBC_DoWork_08_Re/Public/GameActor/Player/Controller/MyPlayerController.h"
 
 
@@ -27,6 +26,8 @@ AMyPlayer::AMyPlayer()
 	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationYaw = false;
+	
+	PlayerBattleState = EPlayerBattleState::Melee;
 }
 
 
@@ -44,7 +45,6 @@ void AMyPlayer::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-
 void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -53,7 +53,15 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	{
 		if (AMyPlayerController* PC =  Cast<AMyPlayerController>(GetController()))
 		{
-			EnhancedInputComp->BindAction(PC->IA_Move,ETriggerEvent::Triggered,this,&AMyPlayer::Move);
+			if (PC->IA_Move)
+			{
+				EnhancedInputComp->BindAction(PC->IA_Move,ETriggerEvent::Triggered,this,&AMyPlayer::Move);
+			}
+				
+			if (PC->IA_SelectBattleMode)
+			{
+				EnhancedInputComp->BindAction(PC->IA_SelectBattleMode,ETriggerEvent::Triggered,this,&AMyPlayer::SelectWeapon);
+			}
 		}
 	}
 	
@@ -76,7 +84,6 @@ void AMyPlayer::Move(const FInputActionValue& Value)
 
 void AMyPlayer::SpawnWeapon()
 {
-	
 	if (PlayerWeapon)
 	{
 		AActor* SpawnActorInst = GetWorld()->SpawnActor<AActor>(PlayerWeapon,FVector::ZeroVector,FRotator::ZeroRotator);	
@@ -85,5 +92,28 @@ void AMyPlayer::SpawnWeapon()
 			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,true);
 			SpawnActorInst->AttachToComponent(GetMesh(),AttachmentRules,TEXT("WeaponSocket"));
 		}
+	}
+}
+
+void AMyPlayer::SelectWeapon(const FInputActionValue& Value)
+{
+	int32 SlotIndex = static_cast<int>(Value.Get<float>());
+	
+	switch (SlotIndex)
+	{
+	case 1:
+		{
+			PlayerBattleState = EPlayerBattleState::Melee;
+			UE_LOG(LogTemp,Warning,TEXT("근접 무기 모드"));
+		}
+		break;
+	case 2:
+		{
+			PlayerBattleState = EPlayerBattleState::Gun;
+			UE_LOG(LogTemp,Warning,TEXT("원거리 무기 모드"));
+		}
+		break;
+	default:
+		break;
 	}
 }
