@@ -33,7 +33,10 @@ AMyPlayer::AMyPlayer()
 void AMyPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if (PlayerWeapon)
+	{
+		SpawnWeapon();
+	}
 }
 
 void AMyPlayer::Tick(float DeltaTime)
@@ -69,4 +72,18 @@ void AMyPlayer::Move(const FInputActionValue& Value)
 		AddMovementInput(FVector(0.f,MoveValue.X,0.f),1.f);
 	}
 	
+}
+
+void AMyPlayer::SpawnWeapon()
+{
+	
+	if (PlayerWeapon)
+	{
+		AActor* SpawnActorInst = GetWorld()->SpawnActor<AActor>(PlayerWeapon,FVector::ZeroVector,FRotator::ZeroRotator);	
+		if (SpawnActorInst)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,true);
+			SpawnActorInst->AttachToComponent(GetMesh(),AttachmentRules,TEXT("WeaponSocket"));
+		}
+	}
 }

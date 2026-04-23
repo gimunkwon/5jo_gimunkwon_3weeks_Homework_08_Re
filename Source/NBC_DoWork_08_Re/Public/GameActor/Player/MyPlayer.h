@@ -23,8 +23,11 @@ protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Camera")
 	TObjectPtr<UCameraComponent> CameraComp;
 	
-	void Move(const FInputActionValue& Value);
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Weapon")
+	TSubclassOf<AActor> PlayerWeapon;
 	
+	void Move(const FInputActionValue& Value);
+	void SpawnWeapon();
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
