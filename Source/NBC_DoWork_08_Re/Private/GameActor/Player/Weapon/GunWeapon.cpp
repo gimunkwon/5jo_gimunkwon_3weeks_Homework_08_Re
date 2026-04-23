@@ -4,8 +4,8 @@
 
 AGunWeapon::AGunWeapon()
 {
-	
 	PrimaryActorTick.bCanEverTick = true;
+	AttackDamage = 100.f;
 }
 
 

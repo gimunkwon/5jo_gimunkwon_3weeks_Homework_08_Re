@@ -4,8 +4,8 @@
 
 AMeleeWeapon::AMeleeWeapon()
 {
-	
 	PrimaryActorTick.bCanEverTick = true;
+	AttackDamage = 50.f;
 }
 
 
