@@ -23,6 +23,8 @@ class NBC_DOWORK_08_RE_API AMyPlayer : public ACharacter
 
 public:
 	AMyPlayer();
+	UFUNCTION(BlueprintCallable)
+	EPlayerBattleState GetPlayerBattleState() const {return PlayerBattleState;}
 protected:
 	virtual void BeginPlay() override;
 	
