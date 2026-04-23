@@ -4,6 +4,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "AI/NavigationSystemBase.h"
+#include "Engine/StaticMeshSocket.h"
+#include "GameActor/Player/Weapon/GunWeapon.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "NBC_DoWork_08_Re/Public/GameActor/Player/Controller/MyPlayerController.h"
 
@@ -29,6 +31,9 @@ AMyPlayer::AMyPlayer()
 	bUseControllerRotationYaw = false;
 	
 	PlayerBattleState = EPlayerBattleState::Melee;
+	
+	FireRate = 0.2f;
+	LastFireTime = 0.f;
 }
 
 
@@ -65,7 +70,7 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 			
 			if (PC->IA_Attack)
 			{
-				EnhancedInputComp->BindAction(PC->IA_Attack,ETriggerEvent::Started,this,&AMyPlayer::Attack);
+				EnhancedInputComp->BindAction(PC->IA_Attack,ETriggerEvent::Triggered,this,&AMyPlayer::Attack);
 			}
 		}
 	}
@@ -119,6 +124,8 @@ void AMyPlayer::InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleS
 
 void AMyPlayer::SelectWeapon(const FInputActionValue& Value)
 {
+	if (bIsAttacking) return;
+	
 	int32 SlotIndex = static_cast<int>(Value.Get<float>());
 	
 	EPlayerBattleState NewState = (SlotIndex == 1) ? EPlayerBattleState::Melee : EPlayerBattleState::Gun;
@@ -142,26 +149,55 @@ void AMyPlayer::SelectWeapon(const FInputActionValue& Value)
 
 void AMyPlayer::Attack()
 {
-	if (bIsAttacking) return;
-	UE_LOG(LogTemp,Warning,TEXT("플레이어 공격 시작"));
-	
 	UAnimInstance* MyAnimInst = GetMesh()->GetAnimInstance();
-	UAnimMontage* CurrentMontage = nullptr;
-	if (PlayerBattleState == EPlayerBattleState::Melee) CurrentMontage = AM_MeleeAttack;
-	else if (PlayerBattleState == EPlayerBattleState::Gun) CurrentMontage = AM_GunAttack;
+	if (!MyAnimInst) return;
+	// UE_LOG(LogTemp,Warning,TEXT("플레이어 공격 시작"));
 	
-	if (CurrentMontage)
+	if (PlayerBattleState == EPlayerBattleState::Melee)
 	{
+		if (bIsAttacking) return;
+		if (!AM_MeleeAttack) return;
+		
 		bIsAttacking = true;
 		
 		GetCharacterMovement()->StopMovementImmediately();
-		MyAnimInst->Montage_Play(CurrentMontage);
+		MyAnimInst->Montage_Play(AM_MeleeAttack);
+		
+		//TODO:: MeleeWeapon 공격로직 
+		
 		
 		FOnMontageEnded EndMontage;
 		EndMontage.BindUObject(this, &AMyPlayer::EndAttackMontage);
-		MyAnimInst->Montage_SetEndDelegate(EndMontage,CurrentMontage);
+		MyAnimInst->Montage_SetEndDelegate(EndMontage,AM_MeleeAttack);
 	}
-	
+	else if (PlayerBattleState == EPlayerBattleState::Gun)
+	{
+		float CurrentTime = GetWorld()->GetTimeSeconds();
+		if (CurrentTime - LastFireTime >= FireRate)
+		{
+			if (AM_GunAttack)
+			{
+				MyAnimInst->Montage_Play(AM_GunAttack);
+			}
+			UE_LOG(LogTemp,Warning,TEXT("총 발사"));
+			LastFireTime = CurrentTime;
+			
+			//TODO:: 총알 발사 로직
+			if (WeaponMap.Contains(PlayerBattleState))
+			{
+				if (AGunWeapon* WeaponGun = Cast<AGunWeapon>(WeaponMap[PlayerBattleState]))
+				{
+					FVector StartPos = WeaponGun->GetWeaponMesh()->GetSocketLocation(TEXT("MuzzleSocket"));
+					FVector LaunchDir = WeaponGun->GetWeaponMesh()->GetSocketRotation(TEXT("MuzzleSocket")).Vector();
+					
+					float MaxDistance = 1000.f;
+					FVector EndPos = StartPos + (LaunchDir * MaxDistance);
+					
+					DrawDebugLine(GetWorld(),StartPos, EndPos,FColor::Red,false,0.5f,0,1.f);
+				}
+			}
+		}
+	}
 }
 
 void AMyPlayer::EndAttackMontage(UAnimMontage* Montage, bool bIsEnd)
