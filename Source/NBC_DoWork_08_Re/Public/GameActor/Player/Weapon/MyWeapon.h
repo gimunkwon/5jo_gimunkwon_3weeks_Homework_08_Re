@@ -8,16 +8,16 @@ UCLASS()
 class NBC_DOWORK_08_RE_API AMyWeapon : public AActor
 {
 	GENERATED_BODY()
-
 public:
-	
 	AMyWeapon();
-
 protected:
-	
 	virtual void BeginPlay() override;
-
-public:
 	
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Mesh")
+	TObjectPtr<USceneComponent> SceneComp;
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Mesh")
+	TObjectPtr<UStaticMeshComponent> StaticMeshComp;
+	
+public:
 	virtual void Tick(float DeltaTime) override;
 };

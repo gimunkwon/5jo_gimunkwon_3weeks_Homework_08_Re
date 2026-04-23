@@ -4,8 +4,14 @@
 
 AMyWeapon::AMyWeapon()
 {
-	
 	PrimaryActorTick.bCanEverTick = true;
+	
+	SceneComp = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+	RootComponent = SceneComp;
+	
+	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+	StaticMeshComp->SetupAttachment(SceneComp);
+	StaticMeshComp->SetCollisionProfileName(TEXT("NoCollision"));
 }
 
 
