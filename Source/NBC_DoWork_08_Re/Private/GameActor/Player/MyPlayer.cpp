@@ -12,6 +12,7 @@ AMyPlayer::AMyPlayer()
 	SpringArmComp->SetupAttachment(RootComponent);
 	SpringArmComp->TargetArmLength = 600.f;
 	SpringArmComp->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
+	SpringArmComp->bUsePawnControlRotation = false;
 	
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComp->SetupAttachment(SpringArmComp);
