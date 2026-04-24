@@ -6,6 +6,15 @@ AGunWeapon::AGunWeapon()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	AttackDamage = 100.f;
+	
+	MaxAmmo = 30;
+	CurrentAmmo = MaxAmmo;
+}
+
+bool AGunWeapon::bIsfire()
+{
+	if (CurrentAmmo > 0) CurrentAmmo--;
+	return CurrentAmmo > 0;
 }
 
 
