@@ -193,6 +193,8 @@ void AMyPlayer::Attack()
 					float MaxDistance = 1000.f;
 					FVector EndPos = StartPos + (LaunchDir * MaxDistance);
 					
+					WeaponGun->bIsfire();
+					UE_LOG(LogTemp,Warning,TEXT("Current Ammo: %d"),WeaponGun->GetCurrentAmmo());
 					DrawDebugLine(GetWorld(),StartPos, EndPos,FColor::Red,false,0.5f,0,1.f);
 				}
 			}
