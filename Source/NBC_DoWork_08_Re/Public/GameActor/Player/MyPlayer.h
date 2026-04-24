@@ -54,6 +54,9 @@ protected:
 	void InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleState BattleState);
 	void SelectWeapon(const FInputActionValue& Value);
 	void Attack();
+	void GunAttack(UAnimInstance* MyAnimInst);
+	void MeleeAttack(UAnimInstance* MyAnimInst);
+	void Reload();
 	
 	UFUNCTION()
 	void EndAttackMontage(UAnimMontage* Montage, bool bIsEnd);
