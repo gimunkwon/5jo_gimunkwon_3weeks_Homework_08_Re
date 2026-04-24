@@ -23,6 +23,8 @@ public:
 	TObjectPtr<UInputAction> IA_SelectBattleMode;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Input")
 	TObjectPtr<UInputAction> IA_Attack;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Input")
+	TObjectPtr<UInputAction> IA_Reload;
 	
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="UI")
