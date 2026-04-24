@@ -4,15 +4,20 @@
 
 AGunProjectile::AGunProjectile()
 {
-	
 	PrimaryActorTick.bCanEverTick = true;
+	
+	SceneComp = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+	RootComponent = SceneComp;
+	
+	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
+	StaticMeshComp->SetupAttachment(SceneComp);
+	StaticMeshComp->SetCollisionProfileName(TEXT("NoCollision"));
 }
 
 
 void AGunProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 
