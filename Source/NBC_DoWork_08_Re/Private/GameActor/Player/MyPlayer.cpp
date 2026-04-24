@@ -3,8 +3,6 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
-#include "AI/NavigationSystemBase.h"
-#include "Engine/StaticMeshSocket.h"
 #include "GameActor/Player/Weapon/GunWeapon.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "NBC_DoWork_08_Re/Public/GameActor/Player/Controller/MyPlayerController.h"
@@ -208,12 +206,20 @@ void AMyPlayer::MeleeAttack(UAnimInstance* MyAnimInst)
 		
 	GetCharacterMovement()->StopMovementImmediately();
 	MyAnimInst->Montage_Play(AM_MeleeAttack);
-		
-	//TODO:: MeleeWeapon 공격로직 
-		
+	
 	FOnMontageEnded EndMontage;
 	EndMontage.BindUObject(this, &AMyPlayer::EndAttackMontage);
 	MyAnimInst->Montage_SetEndDelegate(EndMontage,AM_MeleeAttack);
+}
+
+void AMyPlayer::CheckMeleeAttackRange()
+{
+	//TODO:: MeleeWeapon 공격로직 
+	FVector Center = GetActorLocation() + (GetActorForwardVector() * 140.f);
+	FVector BoxExtent = FVector(70.f,50.f,100.f);
+	FQuat Rotation = GetActorRotation().Quaternion();
+	
+	DrawDebugBox(GetWorld(), Center, BoxExtent, Rotation, FColor::Yellow, false, 0.5f, 0, 1.f);
 }
 
 void AMyPlayer::EndAttackMontage(UAnimMontage* Montage, bool bIsEnd)

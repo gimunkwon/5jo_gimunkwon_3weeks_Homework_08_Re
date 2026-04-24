@@ -56,6 +56,8 @@ protected:
 	void Attack();
 	void GunAttack(UAnimInstance* MyAnimInst);
 	void MeleeAttack(UAnimInstance* MyAnimInst);
+	UFUNCTION(BlueprintCallable)
+	void CheckMeleeAttackRange();
 	void Reload();
 	
 	UFUNCTION()
