@@ -17,6 +17,15 @@ bool AGunWeapon::bIsfire()
 	return CurrentAmmo > 0;
 }
 
+bool AGunWeapon::bCanReload()
+{
+	if (CurrentAmmo == MaxAmmo) return false;
+	
+	CurrentAmmo = MaxAmmo;
+	UE_LOG(LogTemp,Warning,TEXT("Reload!! CurrentAmmo : %d"),CurrentAmmo);
+	return true;
+}
+
 
 void AGunWeapon::BeginPlay()
 {

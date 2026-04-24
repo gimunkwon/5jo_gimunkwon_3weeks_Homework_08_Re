@@ -13,6 +13,7 @@ public:
 	AGunWeapon();
 	
 	bool bIsfire();
+	bool bCanReload();
 	FORCEINLINE int32 GetCurrentAmmo() const {return CurrentAmmo;}
 
 protected:
