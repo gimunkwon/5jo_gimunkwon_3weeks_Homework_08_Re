@@ -51,6 +51,8 @@ protected:
 	float LastFireTime;
 	
 	void Move(const FInputActionValue& Value);
+	void Rotate();
+	void EndRotate();
 	void InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleState BattleState);
 	void SelectWeapon(const FInputActionValue& Value);
 	void Attack();

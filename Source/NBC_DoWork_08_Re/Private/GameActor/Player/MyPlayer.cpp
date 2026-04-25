@@ -7,6 +7,7 @@
 #include "Engine/OverlapResult.h"
 #include "GameActor/Player/Weapon/GunWeapon.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "NBC_DoWork_08_Re/Public/GameActor/Player/Controller/MyPlayerController.h"
 
 
@@ -77,6 +78,11 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 			{
 				EnhancedInputComp->BindAction(PC->IA_Reload,ETriggerEvent::Started,this,&AMyPlayer::Reload);
 			}
+			if (PC->IA_Rotate)
+			{
+				EnhancedInputComp->BindAction(PC->IA_Rotate,ETriggerEvent::Triggered,this,&AMyPlayer::Rotate);
+				EnhancedInputComp->BindAction(PC->IA_Rotate,ETriggerEvent::Completed,this,&AMyPlayer::EndRotate);
+			}
 		}
 	}
 	
@@ -97,6 +103,34 @@ void AMyPlayer::Move(const FInputActionValue& Value)
 		AddMovementInput(FVector(0.f,MoveValue.X,0.f),1.f);
 	}
 	
+}
+
+void AMyPlayer::Rotate()
+{
+	// UE_LOG(LogTemp,Warning,TEXT("회전 시작"));
+	if (AMyPlayerController* PC = Cast<AMyPlayerController>(GetController()))
+	{
+		FHitResult HitResult;
+		if (PC->GetHitResultUnderCursor(ECC_Visibility,false,HitResult))
+		{
+			FVector StartPos = GetActorLocation();
+			FVector TargetPos = HitResult.Location;
+			
+			FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartPos,TargetPos);
+			FRotator NewRotation(0.f,LookAtRotation.Yaw,0.f);
+			
+			FRotator CurrentRoation = GetActorRotation();
+			FRotator SmoothRotation = FMath::RInterpTo(CurrentRoation, NewRotation, GetWorld()->GetDeltaSeconds(), 30.f);
+			
+			GetCharacterMovement()->bOrientRotationToMovement = false;
+			SetActorRotation(SmoothRotation);
+		}
+	}
+}
+
+void AMyPlayer::EndRotate()
+{
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 void AMyPlayer::InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleState BattleState)
