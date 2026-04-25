@@ -3,6 +3,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
+#include "KismetTraceUtils.h"
+#include "Engine/OverlapResult.h"
 #include "GameActor/Player/Weapon/GunWeapon.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "NBC_DoWork_08_Re/Public/GameActor/Player/Controller/MyPlayerController.h"
@@ -191,7 +193,8 @@ void AMyPlayer::GunAttack(UAnimInstance* MyAnimInst)
 					
 				WeaponGun->bIsfire();
 				UE_LOG(LogTemp,Warning,TEXT("Current Ammo: %d"),WeaponGun->GetCurrentAmmo());
-				DrawDebugLine(GetWorld(),StartPos, EndPos,FColor::Red,false,0.5f,0,1.f);
+				
+				CheckGunAttackRange(StartPos, EndPos);
 			}
 		}
 	}
@@ -216,10 +219,65 @@ void AMyPlayer::CheckMeleeAttackRange()
 {
 	//TODO:: MeleeWeapon 공격로직 
 	FVector Center = GetActorLocation() + (GetActorForwardVector() * 140.f);
+	FVector End = Center + (GetActorForwardVector() * 280.f);
 	FVector BoxExtent = FVector(70.f,50.f,100.f);
+	FRotator Orientation = GetActorRotation();
 	FQuat Rotation = GetActorRotation().Quaternion();
 	
-	DrawDebugBox(GetWorld(), Center, BoxExtent, Rotation, FColor::Yellow, false, 0.5f, 0, 1.f);
+	FCollisionShape BoxShape = FCollisionShape::MakeBox(BoxExtent);
+	
+	
+	TArray<FOverlapResult> OverlapsResults;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+	
+	bool bHit = GetWorld()->OverlapMultiByChannel(OverlapsResults,Center,Rotation,ECC_GameTraceChannel1, BoxShape,Params);
+	
+	UE_LOG(LogTemp,Warning,TEXT("전체 히트 개수 : %d"),OverlapsResults.Num());
+	
+	DrawDebugBox(GetWorld(), Center, BoxExtent, Rotation, bHit ? FColor::Red : FColor::Yellow, false, 0.5f, 0, 1.f);
+	
+	
+	if (!OverlapsResults.IsEmpty())
+	{
+		TArray<AActor*> AlreadyAttackActor;
+		for (auto& Result : OverlapsResults)
+		{
+			if (!AlreadyAttackActor.Contains(Result.GetActor()) && Result.GetActor()->ActorHasTag(TEXT("Zombie")))
+			{
+				UE_LOG(LogTemp,Warning,TEXT("공격 받은 대상 %s"),*Result.GetActor()->GetName());
+				
+				AlreadyAttackActor.Add(Result.GetActor());
+			}
+		}
+	}
+}
+
+void AMyPlayer::CheckGunAttackRange(FVector StartLocation, FVector EndLocation)
+{
+	TArray<FHitResult> HitResult;
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+	
+	bool bHit = GetWorld()->LineTraceMultiByChannel(HitResult, StartLocation, EndLocation, ECollisionChannel::ECC_GameTraceChannel1, QueryParams);
+	UE_LOG(LogTemp,Warning,TEXT("전체 히트 개수: %d"),HitResult.Num());
+	
+	if (!HitResult.IsEmpty())
+	{
+		TArray<AActor*> AlreadyHitActor;
+		
+		for (const FHitResult& Result : HitResult)
+		{
+			AActor* HitActor = Result.GetActor();
+			if (HitActor && !AlreadyHitActor.Contains(HitActor) && HitActor->ActorHasTag(TEXT("Zombie")))
+			{
+				UE_LOG(LogTemp,Warning,TEXT("총 관통 타격 횟수: %s"), *HitActor->GetName());
+				
+				AlreadyHitActor.Add(HitActor);
+			}
+		}
+	}
+	DrawDebugLine(GetWorld(),StartLocation, EndLocation, bHit ? FColor::Red : FColor::Green, false, 0.5f, 0, 1.f);
 }
 
 void AMyPlayer::EndAttackMontage(UAnimMontage* Montage, bool bIsEnd)

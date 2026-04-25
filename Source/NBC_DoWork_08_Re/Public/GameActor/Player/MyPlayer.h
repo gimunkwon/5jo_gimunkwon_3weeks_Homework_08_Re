@@ -58,6 +58,7 @@ protected:
 	void MeleeAttack(UAnimInstance* MyAnimInst);
 	UFUNCTION(BlueprintCallable)
 	void CheckMeleeAttackRange();
+	void CheckGunAttackRange(FVector StartLocation, FVector EndLocation);
 	void Reload();
 	
 	UFUNCTION()
