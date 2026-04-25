@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Misc/MapErrors.h"
 #include "MyWeapon.generated.h"
 
 UCLASS()

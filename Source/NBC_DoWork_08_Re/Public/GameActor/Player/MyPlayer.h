@@ -51,9 +51,17 @@ protected:
 	float LastFireTime;
 	
 	void Move(const FInputActionValue& Value);
+	void Rotate();
+	void EndRotate();
 	void InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleState BattleState);
 	void SelectWeapon(const FInputActionValue& Value);
 	void Attack();
+	void GunAttack(UAnimInstance* MyAnimInst);
+	void MeleeAttack(UAnimInstance* MyAnimInst);
+	UFUNCTION(BlueprintCallable)
+	void CheckMeleeAttackRange();
+	void CheckGunAttackRange(FVector StartLocation, FVector EndLocation);
+	void Reload();
 	
 	UFUNCTION()
 	void EndAttackMontage(UAnimMontage* Montage, bool bIsEnd);
