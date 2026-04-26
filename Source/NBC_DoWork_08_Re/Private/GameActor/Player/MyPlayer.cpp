@@ -24,6 +24,7 @@ AMyPlayer::AMyPlayer()
 	SpringArmComp->bInheritPitch = false;
 	SpringArmComp->bInheritRoll = false;
 	SpringArmComp->bInheritYaw = false;
+	SpringArmComp->bDoCollisionTest = false;
 	
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComp->SetupAttachment(SpringArmComp);
@@ -37,7 +38,6 @@ AMyPlayer::AMyPlayer()
 	FireRate = 0.2f;
 	LastFireTime = 0.f;
 }
-
 
 void AMyPlayer::BeginPlay()
 {
