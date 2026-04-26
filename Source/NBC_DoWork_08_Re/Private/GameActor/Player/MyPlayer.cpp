@@ -7,6 +7,7 @@
 #include "Engine/OverlapResult.h"
 #include "GameActor/Player/Weapon/GunWeapon.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "NBC_DoWork_08_Re/Public/GameActor/Player/Controller/MyPlayerController.h"
 
@@ -23,6 +24,7 @@ AMyPlayer::AMyPlayer()
 	SpringArmComp->bInheritPitch = false;
 	SpringArmComp->bInheritRoll = false;
 	SpringArmComp->bInheritYaw = false;
+	SpringArmComp->bDoCollisionTest = false;
 	
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComp->SetupAttachment(SpringArmComp);
@@ -32,11 +34,12 @@ AMyPlayer::AMyPlayer()
 	bUseControllerRotationYaw = false;
 	
 	PlayerBattleState = EPlayerBattleState::Melee;
+	InterpSpeed = 30.f;
 	
+	//TODO::WeaponDT쪽에서 호출하도록 Refac
 	FireRate = 0.2f;
 	LastFireTime = 0.f;
 }
-
 
 void AMyPlayer::BeginPlay()
 {
@@ -120,7 +123,7 @@ void AMyPlayer::Rotate()
 			FRotator NewRotation(0.f,LookAtRotation.Yaw,0.f);
 			
 			FRotator CurrentRoation = GetActorRotation();
-			FRotator SmoothRotation = FMath::RInterpTo(CurrentRoation, NewRotation, GetWorld()->GetDeltaSeconds(), 30.f);
+			FRotator SmoothRotation = FMath::RInterpTo(CurrentRoation, NewRotation, GetWorld()->GetDeltaSeconds(), InterpSpeed);
 			
 			GetCharacterMovement()->bOrientRotationToMovement = false;
 			SetActorRotation(SmoothRotation);
@@ -212,6 +215,7 @@ void AMyPlayer::GunAttack(UAnimInstance* MyAnimInst)
 			MyAnimInst->Montage_Play(AM_GunAttack);
 		}
 		UE_LOG(LogTemp,Warning,TEXT("총 발사"));
+		// TODO::무기쪽 DT테이블 값으로 옮기기
 		LastFireTime = CurrentTime;
 			
 		//TODO:: 총알 발사 로직
@@ -221,7 +225,7 @@ void AMyPlayer::GunAttack(UAnimInstance* MyAnimInst)
 			{
 				FVector StartPos = WeaponGun->GetWeaponMesh()->GetSocketLocation(TEXT("MuzzleSocket"));
 				FVector LaunchDir = WeaponGun->GetWeaponMesh()->GetSocketRotation(TEXT("MuzzleSocket")).Vector();
-					
+				//TODO::무기쪽 DT테이블 값으로 옮기기
 				float MaxDistance = 1000.f;
 				FVector EndPos = StartPos + (LaunchDir * MaxDistance);
 					
@@ -251,26 +255,20 @@ void AMyPlayer::MeleeAttack(UAnimInstance* MyAnimInst)
 
 void AMyPlayer::CheckMeleeAttackRange()
 {
-	//TODO:: MeleeWeapon 공격로직 
+	//TODO:: 박스 사이즈 경우에도 무기의 범위이므로 무기 DT로 옮기기 
 	FVector Center = GetActorLocation() + (GetActorForwardVector() * 140.f);
-	FVector End = Center + (GetActorForwardVector() * 280.f);
 	FVector BoxExtent = FVector(70.f,50.f,100.f);
-	FRotator Orientation = GetActorRotation();
 	FQuat Rotation = GetActorRotation().Quaternion();
 	
 	FCollisionShape BoxShape = FCollisionShape::MakeBox(BoxExtent);
-	
 	
 	TArray<FOverlapResult> OverlapsResults;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 	
 	bool bHit = GetWorld()->OverlapMultiByChannel(OverlapsResults,Center,Rotation,ECC_GameTraceChannel1, BoxShape,Params);
-	
 	UE_LOG(LogTemp,Warning,TEXT("전체 히트 개수 : %d"),OverlapsResults.Num());
-	
 	DrawDebugBox(GetWorld(), Center, BoxExtent, Rotation, bHit ? FColor::Red : FColor::Yellow, false, 0.5f, 0, 1.f);
-	
 	
 	if (!OverlapsResults.IsEmpty())
 	{
@@ -280,7 +278,8 @@ void AMyPlayer::CheckMeleeAttackRange()
 			if (!AlreadyAttackActor.Contains(Result.GetActor()) && Result.GetActor()->ActorHasTag(TEXT("Zombie")))
 			{
 				UE_LOG(LogTemp,Warning,TEXT("공격 받은 대상 %s"),*Result.GetActor()->GetName());
-				
+				//TODO:: 무기 데미지 DT로 옮기기
+				UGameplayStatics::ApplyDamage(Result.GetActor(), 20.f, GetController(), this, UDamageType::StaticClass());
 				AlreadyAttackActor.Add(Result.GetActor());
 			}
 		}
@@ -306,7 +305,8 @@ void AMyPlayer::CheckGunAttackRange(FVector StartLocation, FVector EndLocation)
 			if (HitActor && !AlreadyHitActor.Contains(HitActor) && HitActor->ActorHasTag(TEXT("Zombie")))
 			{
 				UE_LOG(LogTemp,Warning,TEXT("총 관통 타격 횟수: %s"), *HitActor->GetName());
-				
+				//TODO:: 무기 데미지 DT로 옮기기
+				UGameplayStatics::ApplyDamage(Result.GetActor(), 20.f, GetController(), this, UDamageType::StaticClass());
 				AlreadyHitActor.Add(HitActor);
 			}
 		}
