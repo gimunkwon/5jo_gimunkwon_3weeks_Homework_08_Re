@@ -1,15 +1,28 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DT_ZombieStat.generated.h"
 
-/**
- * 
- */
-class NBC_DOWORK_08_RE_API DT_ZombieStat
+
+UENUM(BlueprintType)
+enum class EZombieType : uint8
 {
+	Normal,
+	Running,
+	Boss,
+};
+
+
+USTRUCT(BlueprintType)
+struct FZombieStat : public FTableRowBase
+{
+	GENERATED_BODY()
 public:
-	DT_ZombieStat();
-	~DT_ZombieStat();
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="ZombieStat")
+	EZombieType ZombieType;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="ZombieStat")
+	float MaxHP;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="ZombieStat")
+	float Acceleration;
+	
 };
