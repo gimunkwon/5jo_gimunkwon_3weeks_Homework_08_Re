@@ -7,6 +7,7 @@
 #include "Engine/OverlapResult.h"
 #include "GameActor/Player/Weapon/GunWeapon.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "NBC_DoWork_08_Re/Public/GameActor/Player/Controller/MyPlayerController.h"
 
@@ -275,6 +276,7 @@ void AMyPlayer::CheckMeleeAttackRange()
 			{
 				UE_LOG(LogTemp,Warning,TEXT("공격 받은 대상 %s"),*Result.GetActor()->GetName());
 				//TODO::데미지 로직
+				UGameplayStatics::ApplyDamage(Result.GetActor(), 20.f, GetController(), this, UDamageType::StaticClass());
 				AlreadyAttackActor.Add(Result.GetActor());
 			}
 		}
@@ -301,6 +303,7 @@ void AMyPlayer::CheckGunAttackRange(FVector StartLocation, FVector EndLocation)
 			{
 				UE_LOG(LogTemp,Warning,TEXT("총 관통 타격 횟수: %s"), *HitActor->GetName());
 				//TODO::데미지 로직
+				UGameplayStatics::ApplyDamage(Result.GetActor(), 20.f, GetController(), this, UDamageType::StaticClass());
 				AlreadyHitActor.Add(HitActor);
 			}
 		}
