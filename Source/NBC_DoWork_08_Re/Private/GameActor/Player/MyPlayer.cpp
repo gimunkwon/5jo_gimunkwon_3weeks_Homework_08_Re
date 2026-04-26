@@ -123,7 +123,6 @@ void AMyPlayer::Rotate()
 			FRotator NewRotation(0.f,LookAtRotation.Yaw,0.f);
 			
 			FRotator CurrentRoation = GetActorRotation();
-			//TODO:: 초당 보간해서 회전하는값 Editor노출
 			FRotator SmoothRotation = FMath::RInterpTo(CurrentRoation, NewRotation, GetWorld()->GetDeltaSeconds(), InterpSpeed);
 			
 			GetCharacterMovement()->bOrientRotationToMovement = false;

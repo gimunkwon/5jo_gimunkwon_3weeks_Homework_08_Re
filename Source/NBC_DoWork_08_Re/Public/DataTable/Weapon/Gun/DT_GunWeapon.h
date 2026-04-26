@@ -8,5 +8,9 @@ USTRUCT(BlueprintType)
 struct FGunWeaponStat : public FBaseWeaponStat
 {
 	GENERATED_BODY()
-	
+public:
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="GunStat")
+	float MaxDistance;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="GunStat")
+	float FireRate;
 };
