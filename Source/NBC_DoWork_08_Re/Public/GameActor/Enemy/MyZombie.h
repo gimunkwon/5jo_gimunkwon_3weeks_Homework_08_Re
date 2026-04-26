@@ -18,6 +18,11 @@ protected:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
 	TObjectPtr<UWidgetComponent> WidgetC_EnemyStat;
+	
+private:
+	float HP;
+	float MaxHP;
+	
 public:
 	virtual void Tick(float DeltaTime) override;
 };

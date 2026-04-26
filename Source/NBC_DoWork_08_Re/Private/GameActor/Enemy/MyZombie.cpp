@@ -11,6 +11,9 @@ AMyZombie::AMyZombie()
 	WidgetC_EnemyStat = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
 	// WidgetC_EnemyStat->SetupAttachment(GetMesh());
 	// WidgetC_EnemyStat->SetWidgetSpace(EWidgetSpace::Screen);
+	
+	MaxHP = 200.f;
+	HP = 200.f;
 }
 
 void AMyZombie::BeginPlay()
@@ -21,7 +24,13 @@ void AMyZombie::BeginPlay()
 float AMyZombie::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
 	class AController* EventInstigator, AActor* DamageCauser)
 {
-	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	
+	HP = FMath::Clamp(HP - ActualDamage, 0.f, MaxHP);
+	UE_LOG(LogTemp,Warning,TEXT("Current Enemy HP : %f"),HP);
+	
+	
+	return ActualDamage;
 }
 
 void AMyZombie::Tick(float DeltaTime)
