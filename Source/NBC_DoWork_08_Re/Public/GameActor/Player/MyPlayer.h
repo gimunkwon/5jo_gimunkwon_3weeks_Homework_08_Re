@@ -47,6 +47,8 @@ protected:
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Combat")
 	float FireRate;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Combat")
+	float InterpSpeed;
 	
 	float LastFireTime;
 	

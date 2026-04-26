@@ -34,7 +34,9 @@ AMyPlayer::AMyPlayer()
 	bUseControllerRotationYaw = false;
 	
 	PlayerBattleState = EPlayerBattleState::Melee;
+	InterpSpeed = 30.f;
 	
+	//TODO::WeaponDT쪽에서 호출하도록 Refac
 	FireRate = 0.2f;
 	LastFireTime = 0.f;
 }
@@ -121,7 +123,8 @@ void AMyPlayer::Rotate()
 			FRotator NewRotation(0.f,LookAtRotation.Yaw,0.f);
 			
 			FRotator CurrentRoation = GetActorRotation();
-			FRotator SmoothRotation = FMath::RInterpTo(CurrentRoation, NewRotation, GetWorld()->GetDeltaSeconds(), 30.f);
+			//TODO:: 초당 보간해서 회전하는값 Editor노출
+			FRotator SmoothRotation = FMath::RInterpTo(CurrentRoation, NewRotation, GetWorld()->GetDeltaSeconds(), InterpSpeed);
 			
 			GetCharacterMovement()->bOrientRotationToMovement = false;
 			SetActorRotation(SmoothRotation);
@@ -213,6 +216,7 @@ void AMyPlayer::GunAttack(UAnimInstance* MyAnimInst)
 			MyAnimInst->Montage_Play(AM_GunAttack);
 		}
 		UE_LOG(LogTemp,Warning,TEXT("총 발사"));
+		// TODO::무기쪽 DT테이블 값으로 옮기기
 		LastFireTime = CurrentTime;
 			
 		//TODO:: 총알 발사 로직
@@ -222,7 +226,7 @@ void AMyPlayer::GunAttack(UAnimInstance* MyAnimInst)
 			{
 				FVector StartPos = WeaponGun->GetWeaponMesh()->GetSocketLocation(TEXT("MuzzleSocket"));
 				FVector LaunchDir = WeaponGun->GetWeaponMesh()->GetSocketRotation(TEXT("MuzzleSocket")).Vector();
-					
+				//TODO::무기쪽 DT테이블 값으로 옮기기
 				float MaxDistance = 1000.f;
 				FVector EndPos = StartPos + (LaunchDir * MaxDistance);
 					
@@ -252,7 +256,7 @@ void AMyPlayer::MeleeAttack(UAnimInstance* MyAnimInst)
 
 void AMyPlayer::CheckMeleeAttackRange()
 {
-	//TODO:: MeleeWeapon 공격로직 
+	//TODO:: 박스 사이즈 경우에도 무기의 범위이므로 무기 DT로 옮기기 
 	FVector Center = GetActorLocation() + (GetActorForwardVector() * 140.f);
 	FVector BoxExtent = FVector(70.f,50.f,100.f);
 	FQuat Rotation = GetActorRotation().Quaternion();
@@ -275,7 +279,7 @@ void AMyPlayer::CheckMeleeAttackRange()
 			if (!AlreadyAttackActor.Contains(Result.GetActor()) && Result.GetActor()->ActorHasTag(TEXT("Zombie")))
 			{
 				UE_LOG(LogTemp,Warning,TEXT("공격 받은 대상 %s"),*Result.GetActor()->GetName());
-				//TODO::데미지 로직
+				//TODO:: 무기 데미지 DT로 옮기기
 				UGameplayStatics::ApplyDamage(Result.GetActor(), 20.f, GetController(), this, UDamageType::StaticClass());
 				AlreadyAttackActor.Add(Result.GetActor());
 			}
@@ -302,7 +306,7 @@ void AMyPlayer::CheckGunAttackRange(FVector StartLocation, FVector EndLocation)
 			if (HitActor && !AlreadyHitActor.Contains(HitActor) && HitActor->ActorHasTag(TEXT("Zombie")))
 			{
 				UE_LOG(LogTemp,Warning,TEXT("총 관통 타격 횟수: %s"), *HitActor->GetName());
-				//TODO::데미지 로직
+				//TODO:: 무기 데미지 DT로 옮기기
 				UGameplayStatics::ApplyDamage(Result.GetActor(), 20.f, GetController(), this, UDamageType::StaticClass());
 				AlreadyHitActor.Add(HitActor);
 			}
