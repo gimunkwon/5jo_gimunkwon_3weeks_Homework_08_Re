@@ -253,24 +253,18 @@ void AMyPlayer::CheckMeleeAttackRange()
 {
 	//TODO:: MeleeWeapon 공격로직 
 	FVector Center = GetActorLocation() + (GetActorForwardVector() * 140.f);
-	FVector End = Center + (GetActorForwardVector() * 280.f);
 	FVector BoxExtent = FVector(70.f,50.f,100.f);
-	FRotator Orientation = GetActorRotation();
 	FQuat Rotation = GetActorRotation().Quaternion();
 	
 	FCollisionShape BoxShape = FCollisionShape::MakeBox(BoxExtent);
-	
 	
 	TArray<FOverlapResult> OverlapsResults;
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 	
 	bool bHit = GetWorld()->OverlapMultiByChannel(OverlapsResults,Center,Rotation,ECC_GameTraceChannel1, BoxShape,Params);
-	
 	UE_LOG(LogTemp,Warning,TEXT("전체 히트 개수 : %d"),OverlapsResults.Num());
-	
 	DrawDebugBox(GetWorld(), Center, BoxExtent, Rotation, bHit ? FColor::Red : FColor::Yellow, false, 0.5f, 0, 1.f);
-	
 	
 	if (!OverlapsResults.IsEmpty())
 	{
@@ -280,7 +274,7 @@ void AMyPlayer::CheckMeleeAttackRange()
 			if (!AlreadyAttackActor.Contains(Result.GetActor()) && Result.GetActor()->ActorHasTag(TEXT("Zombie")))
 			{
 				UE_LOG(LogTemp,Warning,TEXT("공격 받은 대상 %s"),*Result.GetActor()->GetName());
-				
+				//TODO::데미지 로직
 				AlreadyAttackActor.Add(Result.GetActor());
 			}
 		}
@@ -306,7 +300,7 @@ void AMyPlayer::CheckGunAttackRange(FVector StartLocation, FVector EndLocation)
 			if (HitActor && !AlreadyHitActor.Contains(HitActor) && HitActor->ActorHasTag(TEXT("Zombie")))
 			{
 				UE_LOG(LogTemp,Warning,TEXT("총 관통 타격 횟수: %s"), *HitActor->GetName());
-				
+				//TODO::데미지 로직
 				AlreadyHitActor.Add(HitActor);
 			}
 		}
