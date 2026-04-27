@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "UI/Enemy/EnemyStatWidget.h"
 #include "Engine/OverlapResult.h"
+#include "GameActor/Enemy/AIController/AIZombieController.h"
 
 
 AMyZombie::AMyZombie()
@@ -22,44 +23,11 @@ AMyZombie::AMyZombie()
 	GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel1,ECR_Overlap);
 }
 
-void AMyZombie::AttackToPlayer(AActor* Attacked_Actor)
-{
-	UE_LOG(LogTemp,Warning,TEXT("좀비 공격 시작!!"));
-	
-	static const FString ContextString = "ZombieAttackStat";
-	FZombieStat* ZombieStatRow = RowHandle.GetRow<FZombieStat>(ContextString);
-	if (ZombieStatRow)
-	{
-		FVector StartPos = GetActorLocation() + (GetActorForwardVector() * ZombieStatRow->AttackRange);
-		FVector BoxExtent = ZombieStatRow->AttackBoxSize;
-		FQuat Rot = GetActorRotation().Quaternion();
-		FCollisionShape BoxShape = FCollisionShape::MakeBox(BoxExtent);
-		TArray<FOverlapResult> OverlapsArray;
-		
-		GetWorld()->OverlapMultiByChannel(OverlapsArray,StartPos, Rot, ECC_GameTraceChannel2, BoxShape);
-		DrawDebugBox(GetWorld(),StartPos, BoxExtent, FColor::Yellow, false, 2.f, 0, 1.f);
-		
-		TArray<AActor*> AlreadyAttackedActors;
-		
-		for (const auto& OverlapResult : OverlapsArray)
-		{
-			if (!AlreadyAttackedActors.Contains(OverlapResult.GetActor()) && OverlapResult.GetActor()->ActorHasTag(TEXT("Player")))
-			{
-				UE_LOG(LogTemp,Warning,TEXT("좀비 공격 시작!!"));
-				UGameplayStatics::ApplyDamage(OverlapResult.GetActor(), ZombieStatRow->AttackDamage, nullptr, this, UDamageType::StaticClass());
-				AlreadyAttackedActors.Add(OverlapResult.GetActor());
-			}
-			
-		}
-	}
-}
-
 void AMyZombie::BeginPlay()
 {
 	Super::BeginPlay();
 	
 	WidgetC_EnemyStat->SetWidgetClass(Widget_EnemyStat);
-	InitializeStat();
 	
 	if (WidgetC_EnemyStat)
 	{
@@ -71,7 +39,14 @@ void AMyZombie::BeginPlay()
 	}
 }
 
-void AMyZombie::InitializeStat()
+void AMyZombie::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
+	DrawDebugSphere(GetWorld(),GetActorLocation(), 150.f, 32, FColor::Blue, false, -1.f, 0, 1.f);
+}
+
+void AMyZombie::InitializeStat(const FDataTableRowHandle& RowHandle)
 {
 	if (RowHandle.IsNull()) return;
 	UE_LOG(LogTemp,Warning,TEXT("좀비 스탯 초기화중..."));
@@ -107,11 +82,41 @@ float AMyZombie::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 	return ActualDamage;
 }
 
-void AMyZombie::Tick(float DeltaTime)
+void AMyZombie::AttackToPlayer(AActor* Attacked_Actor)
 {
-	Super::Tick(DeltaTime);
+	UE_LOG(LogTemp,Warning,TEXT("좀비 공격 시작!!"));
 	
-	DrawDebugSphere(GetWorld(),GetActorLocation(), 150.f, 32, FColor::Blue, false, -1.f, 0, 1.f);
+	if (AAIZombieController* AIC = Cast<AAIZombieController>(GetController()))
+	{
+		static const FString ContextString = "ZombieAttackStat";
+		FZombieStat* ZombieStatRow = AIC->GetRowHandle().GetRow<FZombieStat>(ContextString);
+		if (ZombieStatRow)
+		{
+			FVector StartPos = GetActorLocation() + (GetActorForwardVector() * ZombieStatRow->AttackRange);
+			FVector BoxExtent = ZombieStatRow->AttackBoxSize;
+			FQuat Rot = GetActorRotation().Quaternion();
+			FCollisionShape BoxShape = FCollisionShape::MakeBox(BoxExtent);
+			TArray<FOverlapResult> OverlapsArray;
+		
+			GetWorld()->OverlapMultiByChannel(OverlapsArray,StartPos, Rot, ECC_GameTraceChannel2, BoxShape);
+			DrawDebugBox(GetWorld(),StartPos, BoxExtent, FColor::Yellow, false, 2.f, 0, 1.f);
+		
+			TArray<AActor*> AlreadyAttackedActors;
+		
+			for (const auto& OverlapResult : OverlapsArray)
+			{
+				if (!AlreadyAttackedActors.Contains(OverlapResult.GetActor()) && OverlapResult.GetActor()->ActorHasTag(TEXT("Player")))
+				{
+					UE_LOG(LogTemp,Warning,TEXT("좀비 공격 시작!!"));
+					UGameplayStatics::ApplyDamage(OverlapResult.GetActor(), ZombieStatRow->AttackDamage, nullptr, this, UDamageType::StaticClass());
+					AlreadyAttackedActors.Add(OverlapResult.GetActor());
+				}
+			
+			}
+		}
+	}
+	
+	
 }
 
 

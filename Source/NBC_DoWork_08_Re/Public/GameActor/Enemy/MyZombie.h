@@ -15,6 +15,7 @@ public:
 	AMyZombie();
 	
 	void AttackToPlayer(AActor* Attacked_Actor);
+	void InitializeStat(const FDataTableRowHandle& RowHandle);
 	
 	FORCEINLINE float GetAttackRange() const {return AttackRange;}
 protected:
@@ -25,10 +26,6 @@ protected:
 	TObjectPtr<UWidgetComponent> WidgetC_EnemyStat;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
 	TSubclassOf<UUserWidget> Widget_EnemyStat;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Data")
-	FDataTableRowHandle RowHandle;
-	
-	void InitializeStat();
 private:
 	float HP;
 	float MaxHP;
