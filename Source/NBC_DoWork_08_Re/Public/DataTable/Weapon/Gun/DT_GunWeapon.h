@@ -13,4 +13,6 @@ public:
 	float MaxDistance;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="GunStat")
 	float FireRate;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="GunStat")
+	int32 MaxAmmo;
 };

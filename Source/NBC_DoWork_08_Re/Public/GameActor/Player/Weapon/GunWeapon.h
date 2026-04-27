@@ -15,14 +15,22 @@ public:
 	bool bIsfire();
 	bool bCanReload();
 	FORCEINLINE int32 GetCurrentAmmo() const {return CurrentAmmo;}
-
+	FORCEINLINE float GetLastFireTime() const {return LastFireTime;}
+	FORCEINLINE float GetGunMaxDistance() const {return MaxDistance;}
+	
+	
+	FORCEINLINE void SetLastFireTime(float NewLastFireTime) {LastFireTime = NewLastFireTime;}
 protected:
 	virtual void BeginPlay() override;
 	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ammo")
+	void InitializeWeaponStat() override;
+	
 	int32 MaxAmmo;
 	int32 CurrentAmmo;
 	
+	float FireRate;
+	float LastFireTime;
+	float MaxDistance;
 public:
 	virtual void Tick(float DeltaTime) override;
 };

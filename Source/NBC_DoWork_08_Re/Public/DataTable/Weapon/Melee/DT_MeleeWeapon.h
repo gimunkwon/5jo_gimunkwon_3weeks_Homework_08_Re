@@ -10,5 +10,7 @@ struct FMeleeWeaponStat : public FBaseWeaponStat
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="MeleeStat")
+	float Distance;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="MeleeStat")
 	FVector BoxExtent;
 };
