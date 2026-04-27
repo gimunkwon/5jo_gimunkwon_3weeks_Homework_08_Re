@@ -17,6 +17,9 @@ public:
 	void AttackToPlayer(AActor* Attacked_Actor);
 	void InitializeStat(const FDataTableRowHandle& RowHandle);
 	
+	UFUNCTION(BlueprintCallable)
+	void ZombieAttackHitCheck();
+	
 	FORCEINLINE float GetAttackRange() const {return AttackRange;}
 protected:
 	virtual void BeginPlay() override;
@@ -26,6 +29,11 @@ protected:
 	TObjectPtr<UWidgetComponent> WidgetC_EnemyStat;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
 	TSubclassOf<UUserWidget> Widget_EnemyStat;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animations")
+	TObjectPtr<UAnimMontage> AM_Dead;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animations")
+	TObjectPtr<UAnimMontage> AM_Attack;
 	
 	void OnDead();
 private:

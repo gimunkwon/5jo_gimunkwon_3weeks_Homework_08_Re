@@ -66,8 +66,9 @@ void AMyZombie::InitializeStat(const FDataTableRowHandle& RowHandle)
 	}
 }
 
+
 float AMyZombie::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
-	class AController* EventInstigator, AActor* DamageCauser)
+                            class AController* EventInstigator, AActor* DamageCauser)
 {
 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	HP = FMath::Clamp(HP - ActualDamage, 0.f, MaxHP);
@@ -108,6 +109,16 @@ void AMyZombie::OnDead()
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	//TODO:: Death애님 몽타주 실행
+	if (AM_Dead)
+	{
+		if (UAnimInstance* AnimInst = GetMesh()->GetAnimInstance())
+		{
+			AnimInst->Montage_Play(AM_Dead);
+			FOnMontageEnded EndMontage;
+			EndMontage.BindLambda([this](UAnimMontage* Montage, bool bInterrupted){Destroy();});
+			AnimInst->Montage_SetEndDelegate(EndMontage,AM_Dead);
+		}
+	}
 	
 	SetLifeSpan(3.f);
 }
@@ -116,6 +127,14 @@ void AMyZombie::AttackToPlayer(AActor* Attacked_Actor)
 {
 	UE_LOG(LogTemp,Warning,TEXT("좀비 공격 시작!!"));
 	
+	if (AM_Attack)
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(AM_Attack);
+	}
+}
+
+void AMyZombie::ZombieAttackHitCheck()
+{
 	if (AAIZombieController* AIC = Cast<AAIZombieController>(GetController()))
 	{
 		static const FString ContextString = "ZombieAttackStat";
@@ -145,8 +164,4 @@ void AMyZombie::AttackToPlayer(AActor* Attacked_Actor)
 			}
 		}
 	}
-	
-	
 }
-
-
