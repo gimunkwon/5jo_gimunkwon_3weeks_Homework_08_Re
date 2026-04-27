@@ -16,7 +16,7 @@ AAIZombieController::AAIZombieController()
 	
 	SightConfig->SightRadius = 700.f;
 	SightConfig->LoseSightRadius = 1000.f;
-	SightConfig->PeripheralVisionAngleDegrees = 60.f;
+	SightConfig->PeripheralVisionAngleDegrees = 120.f;
 	SightConfig->SetMaxAge(5.f);
 	
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
