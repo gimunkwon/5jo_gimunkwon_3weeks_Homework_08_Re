@@ -2,6 +2,7 @@
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "GameActor/Enemy/MyZombie.h"
 
 UBTT_AttackToPlayer::UBTT_AttackToPlayer()
 {
@@ -14,8 +15,13 @@ EBTNodeResult::Type UBTT_AttackToPlayer::ExecuteTask(UBehaviorTreeComponent& Own
 	APawn* ControllingPawn = AIController->GetPawn();
 	if (!ControllingPawn) return EBTNodeResult::Failed;
 	
-	UE_LOG(LogTemp,Warning,TEXT("좀비 공격 시작"));
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(TEXT("bCanAttackRange"),false);
+	
+	if (AMyZombie* MyAIOwner = Cast<AMyZombie>(ControllingPawn))
+	{
+		MyAIOwner->AttackToPlayer(Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(TEXT("TargetActor"))));
+	}
+	
 	
 	return EBTNodeResult::Succeeded;
 }
