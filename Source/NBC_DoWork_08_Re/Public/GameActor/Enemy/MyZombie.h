@@ -26,6 +26,8 @@ protected:
 	TObjectPtr<UWidgetComponent> WidgetC_EnemyStat;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
 	TSubclassOf<UUserWidget> Widget_EnemyStat;
+	
+	void OnDead();
 private:
 	float HP;
 	float MaxHP;

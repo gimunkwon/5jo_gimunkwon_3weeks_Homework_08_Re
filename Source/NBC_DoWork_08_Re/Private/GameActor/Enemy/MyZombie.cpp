@@ -1,5 +1,8 @@
 #include "NBC_DoWork_08_Re/Public/GameActor/Enemy/MyZombie.h"
 
+#include "BrainComponent.h"
+#include "AI/NavigationSystemBase.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "DataTable/Zombie/DT_ZombieStat.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -79,7 +82,34 @@ float AMyZombie::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 			HPWidget->UpdateHPProgressBar(HP, MaxHP);
 		}
 	}
+	
+	if (HP <= 0.f)
+	{
+		OnDead();
+	}
+	
 	return ActualDamage;
+}
+
+void AMyZombie::OnDead()
+{
+	UE_LOG(LogTemp,Warning,TEXT("Zombie 사망!!"));
+	
+	AAIController* AIC = Cast<AAIController>(GetController());
+	if (AIC && AIC->GetBrainComponent())
+	{
+		AIC->GetBrainComponent()->StopLogic(TEXT("Zombie is Dead"));
+	}
+	
+	GetCharacterMovement()->StopMovementImmediately();
+	GetCharacterMovement()->DisableMovement();
+	
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
+	//TODO:: Death애님 몽타주 실행
+	
+	SetLifeSpan(3.f);
 }
 
 void AMyZombie::AttackToPlayer(AActor* Attacked_Actor)
