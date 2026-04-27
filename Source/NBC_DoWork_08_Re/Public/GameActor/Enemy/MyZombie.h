@@ -19,6 +19,8 @@ protected:
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
 	TObjectPtr<UWidgetComponent> WidgetC_EnemyStat;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
+	TSubclassOf<UUserWidget> Widget_EnemyStat;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Data")
 	FDataTableRowHandle RowHandle;
 	

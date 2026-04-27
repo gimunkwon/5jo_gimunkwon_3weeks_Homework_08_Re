@@ -12,12 +12,19 @@ AMyZombie::AMyZombie()
 	Tags.Add("Zombie");
 	
 	WidgetC_EnemyStat = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
+	WidgetC_EnemyStat->SetupAttachment(RootComponent);
+	WidgetC_EnemyStat->SetWidgetSpace(EWidgetSpace::Screen);
+	WidgetC_EnemyStat->SetPivot(FVector2D(0.5f,0.f));
+	WidgetC_EnemyStat->SetRelativeLocation(FVector(0.f,0.f,120.f));
+	
+	GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel1,ECR_Overlap);
 }
 
 void AMyZombie::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	WidgetC_EnemyStat->SetWidgetClass(Widget_EnemyStat);
 	InitializeStat();
 	
 	if (WidgetC_EnemyStat)
