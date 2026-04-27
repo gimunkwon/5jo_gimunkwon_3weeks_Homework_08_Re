@@ -3,6 +3,7 @@
 #include "Components/WidgetComponent.h"
 #include "DataTable/Zombie/DT_ZombieStat.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/Enemy/EnemyStatWidget.h"
 
 
@@ -18,6 +19,12 @@ AMyZombie::AMyZombie()
 	WidgetC_EnemyStat->SetRelativeLocation(FVector(0.f,0.f,120.f));
 	
 	GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel1,ECR_Overlap);
+}
+
+void AMyZombie::AttackToPlayer(AActor* Attacked_Actor)
+{
+	UE_LOG(LogTemp,Warning,TEXT("좀비 공격 시작!!"));
+	UGameplayStatics::ApplyDamage(Attacked_Actor, 10.f, nullptr,this, UDamageType::StaticClass());
 }
 
 void AMyZombie::BeginPlay()

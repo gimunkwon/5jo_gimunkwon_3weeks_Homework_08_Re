@@ -13,6 +13,8 @@ class NBC_DOWORK_08_RE_API AMyZombie : public ACharacter
 
 public:
 	AMyZombie();
+	
+	void AttackToPlayer(AActor* Attacked_Actor);
 protected:
 	virtual void BeginPlay() override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
@@ -25,7 +27,6 @@ protected:
 	FDataTableRowHandle RowHandle;
 	
 	void InitializeStat();
-	
 private:
 	float HP;
 	float MaxHP;
