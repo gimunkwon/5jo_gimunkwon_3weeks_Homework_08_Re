@@ -36,4 +36,6 @@ public:
 	float SightDegrees;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="ZombieStat")
 	FVector AttackBoxSize;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="ZombieStat")
+	float AttackDetectionRange;
 };
