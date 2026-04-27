@@ -4,7 +4,6 @@
 #include "GameFramework/Character.h"
 #include "MyZombie.generated.h"
 
-enum class EZombieType : uint8;
 class UWidgetComponent;
 
 UCLASS()
@@ -21,14 +20,13 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
 	TObjectPtr<UWidgetComponent> WidgetC_EnemyStat;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Data")
-	TObjectPtr<UDataTable> DT_Stat;
+	FDataTableRowHandle RowHandle;
 	
-	void InitializeStat(EZombieType ZombieType);
+	void InitializeStat();
 	
 private:
 	float HP;
 	float MaxHP;
-	EZombieType ZombieTypes;
 	
 public:
 	virtual void Tick(float DeltaTime) override;
