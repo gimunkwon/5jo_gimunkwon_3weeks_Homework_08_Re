@@ -1,10 +1,10 @@
 #include "GameActor/Enemy/AIController/BTT_AttackToPlayer.h"
 
 #include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 UBTT_AttackToPlayer::UBTT_AttackToPlayer()
 {
-	AttackRange = 500.f;
 }
 
 EBTNodeResult::Type UBTT_AttackToPlayer::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -14,8 +14,8 @@ EBTNodeResult::Type UBTT_AttackToPlayer::ExecuteTask(UBehaviorTreeComponent& Own
 	APawn* ControllingPawn = AIController->GetPawn();
 	if (!ControllingPawn) return EBTNodeResult::Failed;
 	
+	UE_LOG(LogTemp,Warning,TEXT("좀비 공격 시작"));
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(TEXT("bCanAttackRange"),false);
 	
-	
-	
-	return Super::ExecuteTask(OwnerComp, NodeMemory);
+	return EBTNodeResult::Succeeded;
 }
