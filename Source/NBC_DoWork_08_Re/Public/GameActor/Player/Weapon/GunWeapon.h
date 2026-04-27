@@ -19,10 +19,13 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Ammo")
+	void InitializeWeaponStat() override;
+	
 	int32 MaxAmmo;
 	int32 CurrentAmmo;
 	
+	float FireRate;
+	float MaxDistance;
 public:
 	virtual void Tick(float DeltaTime) override;
 };
