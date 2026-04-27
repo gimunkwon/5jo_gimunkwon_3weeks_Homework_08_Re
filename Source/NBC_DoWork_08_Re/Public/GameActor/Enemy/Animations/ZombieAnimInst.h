@@ -14,7 +14,8 @@ public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 protected:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Instance")
 	TObjectPtr<AMyZombie> MyOwner;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Speed")
 	float GroundSpeed;
 };
