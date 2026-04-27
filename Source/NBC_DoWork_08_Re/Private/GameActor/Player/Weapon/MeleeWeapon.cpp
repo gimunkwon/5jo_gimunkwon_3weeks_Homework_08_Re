@@ -25,6 +25,7 @@ void AMeleeWeapon::InitializeWeaponStat()
 	if (MeleeWeaponRow)
 	{
 		AttackSize = MeleeWeaponRow->BoxExtent;
+		Distance = MeleeWeaponRow->Distance;
 		UE_LOG(LogTemp,Warning,TEXT("근접무기 스탯 초기화 완료..."));
 	}
 }
