@@ -13,7 +13,8 @@ class NBC_DOWORK_08_RE_API AMyWeapon : public AActor
 public:
 	AMyWeapon();
 	
-	UStaticMeshComponent* GetWeaponMesh() const {return StaticMeshComp;}
+	FORCEINLINE UStaticMeshComponent* GetWeaponMesh() const {return StaticMeshComp;}
+	FORCEINLINE float GetAttackDamage() const {return AttackDamage;}
 protected:
 	virtual void BeginPlay() override;
 	
