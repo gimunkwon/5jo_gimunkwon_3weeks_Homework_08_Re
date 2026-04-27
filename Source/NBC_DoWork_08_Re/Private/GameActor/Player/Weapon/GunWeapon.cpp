@@ -6,6 +6,7 @@
 AGunWeapon::AGunWeapon()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	LastFireTime = 0.f;
 }
 
 void AGunWeapon::BeginPlay()
