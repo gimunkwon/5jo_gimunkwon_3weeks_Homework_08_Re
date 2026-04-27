@@ -82,6 +82,8 @@ float AMyZombie::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 void AMyZombie::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	DrawDebugSphere(GetWorld(),GetActorLocation(), 150.f, 32, FColor::Blue, false, -1.f, 0, 1.f);
 }
 
 
