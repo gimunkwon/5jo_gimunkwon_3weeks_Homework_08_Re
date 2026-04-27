@@ -1,8 +1,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DataTable/Weapon/DT_BaseWeapon.h"
 #include "GameFramework/Actor.h"
 #include "MyWeapon.generated.h"
+
 
 UCLASS()
 class NBC_DOWORK_08_RE_API AMyWeapon : public AActor
@@ -19,7 +21,13 @@ protected:
 	TObjectPtr<USceneComponent> SceneComp;
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Mesh")
 	TObjectPtr<UStaticMeshComponent> StaticMeshComp;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Attack")
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="WeaponStat")
+	FDataTableRowHandle RowHandle;
+	
+	virtual void InitializeWeaponStat();
+	
+	FName WeaponName;
 	float AttackDamage;
 	
 public:
