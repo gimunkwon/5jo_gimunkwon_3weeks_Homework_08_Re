@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "NBC_DoWork_08_Re/Public/GameActor/Player/Controller/MyPlayerController.h"
+#include "UI/Player/PlayerHUDWidget.h"
 
 
 AMyPlayer::AMyPlayer()
@@ -36,10 +37,8 @@ AMyPlayer::AMyPlayer()
 	
 	PlayerBattleState = EPlayerBattleState::Melee;
 	InterpSpeed = 30.f;
-	
-	//TODO::WeaponDT쪽에서 호출하도록 Refac
-	FireRate = 0.2f;
-	LastFireTime = 0.f;
+	MaxHP = 100.f;
+	CurrentHP = MaxHP;
 }
 
 void AMyPlayer::BeginPlay()
@@ -48,6 +47,11 @@ void AMyPlayer::BeginPlay()
 	
 	InitializeWeapon(MeleeWeapon,EPlayerBattleState::Melee);
 	InitializeWeapon(GunWeapon,EPlayerBattleState::Gun);
+	
+	if (AMyPlayerController* PC = Cast<AMyPlayerController>(GetController()))
+	{
+		PC->WidgetInst_HUD->UpdatePlayerHPBar(MaxHP, CurrentHP);
+	}
 }
 
 void AMyPlayer::Tick(float DeltaTime)
@@ -219,8 +223,7 @@ void AMyPlayer::GunAttack(UAnimInstance* MyAnimInst)
 	
 	float CurrentTime = GetWorld()->GetTimeSeconds();
 	
-	
-	if (CurrentTime - CurrentGun->GetLastFireTime() >= FireRate)
+	if (CurrentTime - CurrentGun->GetLastFireTime() >= CurrentGun->GetFireRate())
 	{
 		if (AM_GunAttack)
 		{

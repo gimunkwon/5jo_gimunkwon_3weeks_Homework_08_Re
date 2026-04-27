@@ -51,11 +51,12 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Combat")
 	float InterpSpeed;
 	
-	float LastFireTime;
-	
+#pragma region Movement
 	void Move(const FInputActionValue& Value);
 	void Rotate();
 	void EndRotate();
+#pragma endregion
+#pragma region Weapon
 	void InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleState BattleState);
 	void SelectWeapon(const FInputActionValue& Value);
 	void Attack();
@@ -65,13 +66,16 @@ protected:
 	void CheckMeleeAttackRange();
 	void CheckGunAttackRange(AGunWeapon* CurrentGunWeapon, FVector StartLocation, FVector EndLocation);
 	void Reload();
-	
 	UFUNCTION()
 	void EndAttackMontage(UAnimMontage* Montage, bool bIsEnd);
+#pragma endregion 
 	
 private:
 	EPlayerBattleState PlayerBattleState;
 	bool bIsAttacking;
+	
+	float CurrentHP;
+	float MaxHP;
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
