@@ -354,5 +354,14 @@ void AMyPlayer::Reload()
 float AMyPlayer::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
 	class AController* EventInstigator, AActor* DamageCauser)
 {
-	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	
+	CurrentHP = FMath::Clamp(CurrentHP - ActualDamage, 0.f, MaxHP);
+	UE_LOG(LogTemp,Warning,TEXT("플레이어 공격 받음 현재 HP %f"),CurrentHP);
+	if (AMyPlayerController* PC = Cast<AMyPlayerController>(GetController()))
+	{
+		PC->WidgetInst_HUD->UpdatePlayerHPBar(MaxHP, CurrentHP);
+	}
+	
+	return ActualDamage;
 }
