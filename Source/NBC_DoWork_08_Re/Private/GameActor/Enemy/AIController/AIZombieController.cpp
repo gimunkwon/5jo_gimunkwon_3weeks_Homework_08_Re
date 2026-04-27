@@ -66,11 +66,11 @@ void AAIZombieController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	if (SightConfig)
-	{
-		DrawDebugSphere(GetWorld(),GetPawn()->GetActorLocation(), SightConfig->SightRadius,32,FColor::Green, false, -1.f, 0, 1.f);
-		DrawDebugSphere(GetWorld(),GetPawn()->GetActorLocation(), SightConfig->LoseSightRadius,32,FColor::Red, false, -1.f, 0, 1.f);
-	}
+	// if (SightConfig)
+	// {
+	// 	DrawDebugSphere(GetWorld(),GetPawn()->GetActorLocation(), SightConfig->SightRadius,32,FColor::Green, false, -1.f, 0, 1.f);
+	// 	DrawDebugSphere(GetWorld(),GetPawn()->GetActorLocation(), SightConfig->LoseSightRadius,32,FColor::Red, false, -1.f, 0, 1.f);
+	// }
 }
 
 
