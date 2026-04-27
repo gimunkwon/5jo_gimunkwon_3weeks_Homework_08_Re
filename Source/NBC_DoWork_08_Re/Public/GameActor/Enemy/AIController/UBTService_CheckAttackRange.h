@@ -12,7 +12,4 @@ public:
 	UUBTService_CheckAttackRange();
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
-	
-	UPROPERTY(EditAnywhere,Category="AI")
-	float AttackRange = 150.f;
 };
