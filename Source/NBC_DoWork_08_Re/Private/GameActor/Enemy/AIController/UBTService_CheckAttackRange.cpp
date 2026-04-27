@@ -2,6 +2,7 @@
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "GameActor/Enemy/MyZombie.h"
 
 UUBTService_CheckAttackRange::UUBTService_CheckAttackRange()
 {
@@ -19,9 +20,13 @@ void UUBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, u
 	
 	if (ControllingPawn && TargetActor)
 	{
-		float Distance = FVector::Dist(ControllingPawn->GetActorLocation(), TargetActor->GetActorLocation());
+		if (AMyZombie* MyOwner = Cast<AMyZombie>(ControllingPawn))
+		{
+			float Distance = FVector::Dist(ControllingPawn->GetActorLocation(), TargetActor->GetActorLocation());
 		
-		bool bInRange = (Distance <= AttackRange);
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(TEXT("bCanAttackRange"), bInRange);
+			bool bInRange = (Distance <= MyOwner->GetAttackRange());
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(TEXT("bCanAttackRange"), bInRange);
+		}
+		
 	}
 }
