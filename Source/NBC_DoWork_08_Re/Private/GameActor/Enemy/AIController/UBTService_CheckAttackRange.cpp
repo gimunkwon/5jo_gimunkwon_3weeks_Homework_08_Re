@@ -24,5 +24,4 @@ void UUBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, u
 		bool bInRange = (Distance <= AttackRange);
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(TEXT("bCanAttackRange"), bInRange);
 	}
-	
 }
