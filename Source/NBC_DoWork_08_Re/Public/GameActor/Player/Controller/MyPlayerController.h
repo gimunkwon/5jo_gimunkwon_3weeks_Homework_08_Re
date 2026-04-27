@@ -4,6 +4,7 @@
 #include "GameFramework/PlayerController.h"
 #include "MyPlayerController.generated.h"
 
+class UPlayerHUDWidget;
 class UInputAction;
 class UInputMappingContext;
 
@@ -31,6 +32,8 @@ public:
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="UI")
 	TSubclassOf<UUserWidget> Widget_HUD;
+	UPROPERTY()
+	TObjectPtr<UPlayerHUDWidget> WidgetInst_HUD;
 	
 protected:
 	virtual void BeginPlay() override;

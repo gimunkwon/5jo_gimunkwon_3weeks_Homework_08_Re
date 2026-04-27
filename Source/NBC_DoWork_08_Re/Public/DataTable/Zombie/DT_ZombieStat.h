@@ -23,6 +23,6 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="ZombieStat")
 	float MaxHP;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="ZombieStat")
-	float Acceleration;
+	float MaxWalkSpeed;
 	
 };
