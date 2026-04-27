@@ -5,6 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/Enemy/EnemyStatWidget.h"
+#include "Engine/OverlapResult.h"
 
 
 AMyZombie::AMyZombie()
@@ -24,7 +25,33 @@ AMyZombie::AMyZombie()
 void AMyZombie::AttackToPlayer(AActor* Attacked_Actor)
 {
 	UE_LOG(LogTemp,Warning,TEXT("좀비 공격 시작!!"));
-	UGameplayStatics::ApplyDamage(Attacked_Actor, 10.f, nullptr,this, UDamageType::StaticClass());
+	
+	static const FString ContextString = "ZombieAttackStat";
+	FZombieStat* ZombieStatRow = RowHandle.GetRow<FZombieStat>(ContextString);
+	if (ZombieStatRow)
+	{
+		FVector StartPos = GetActorLocation() + (GetActorForwardVector() * ZombieStatRow->AttackRange);
+		FVector BoxExtent = ZombieStatRow->AttackBoxSize;
+		FQuat Rot = GetActorRotation().Quaternion();
+		FCollisionShape BoxShape = FCollisionShape::MakeBox(BoxExtent);
+		TArray<FOverlapResult> OverlapsArray;
+		
+		GetWorld()->OverlapMultiByChannel(OverlapsArray,StartPos, Rot, ECC_GameTraceChannel2, BoxShape);
+		DrawDebugBox(GetWorld(),StartPos, BoxExtent, FColor::Yellow, false, 2.f, 0, 1.f);
+		
+		TArray<AActor*> AlreadyAttackedActors;
+		
+		for (const auto& OverlapResult : OverlapsArray)
+		{
+			if (!AlreadyAttackedActors.Contains(OverlapResult.GetActor()) && OverlapResult.GetActor()->ActorHasTag(TEXT("Player")))
+			{
+				UE_LOG(LogTemp,Warning,TEXT("좀비 공격 시작!!"));
+				UGameplayStatics::ApplyDamage(OverlapResult.GetActor(), ZombieStatRow->AttackDamage, nullptr, this, UDamageType::StaticClass());
+				AlreadyAttackedActors.Add(OverlapResult.GetActor());
+			}
+			
+		}
+	}
 }
 
 void AMyZombie::BeginPlay()
