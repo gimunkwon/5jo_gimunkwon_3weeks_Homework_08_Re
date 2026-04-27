@@ -28,6 +28,7 @@ public:
 	EPlayerBattleState GetPlayerBattleState() const {return PlayerBattleState;}
 protected:
 	virtual void BeginPlay() override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Camera")
 	TObjectPtr<USpringArmComponent> SpringArmComp;
