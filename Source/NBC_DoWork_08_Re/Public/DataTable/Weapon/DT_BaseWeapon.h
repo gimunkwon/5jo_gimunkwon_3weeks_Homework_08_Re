@@ -8,7 +8,7 @@ struct FBaseWeaponStat : public FTableRowBase
 {
 	GENERATED_BODY()
 	
-protected:
+public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="WeaponStat")
 	FName WeaponName;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="WeaponStat")
