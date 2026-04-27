@@ -11,7 +11,7 @@ public class NBC_DoWork_08_Re : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput"
-			,"UMG","AIModule"
+			,"UMG","AIModule","NavigationSystem"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
