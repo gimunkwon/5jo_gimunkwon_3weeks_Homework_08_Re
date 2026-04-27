@@ -17,7 +17,7 @@ public:
 	FORCEINLINE int32 GetCurrentAmmo() const {return CurrentAmmo;}
 	FORCEINLINE float GetLastFireTime() const {return LastFireTime;}
 	FORCEINLINE float GetGunMaxDistance() const {return MaxDistance;}
-	
+	FORCEINLINE float GetFireRate() const {return FireRate;}
 	
 	FORCEINLINE void SetLastFireTime(float NewLastFireTime) {LastFireTime = NewLastFireTime;}
 protected:
