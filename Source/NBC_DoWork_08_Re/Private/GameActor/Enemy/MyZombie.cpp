@@ -83,6 +83,7 @@ void AMyZombie::InitializeStat()
 	{
 		MaxHP = ZombieRow->MaxHP;
 		HP = MaxHP;
+		AttackRange = ZombieRow->AttackRange;
 		GetCharacterMovement()->MaxWalkSpeed = ZombieRow->MaxWalkSpeed;
 	}
 }

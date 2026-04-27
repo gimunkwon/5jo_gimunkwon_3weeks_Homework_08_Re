@@ -15,6 +15,8 @@ public:
 	AMyZombie();
 	
 	void AttackToPlayer(AActor* Attacked_Actor);
+	
+	FORCEINLINE float GetAttackRange() const {return AttackRange;}
 protected:
 	virtual void BeginPlay() override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
@@ -30,6 +32,7 @@ protected:
 private:
 	float HP;
 	float MaxHP;
+	float AttackRange;
 	
 public:
 	virtual void Tick(float DeltaTime) override;
