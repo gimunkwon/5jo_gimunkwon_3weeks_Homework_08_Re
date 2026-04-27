@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "MyPlayer.generated.h"
 
+class AGunWeapon;
 struct FInputActionValue;
 class UCameraComponent;
 class USpringArmComponent;
@@ -62,7 +63,7 @@ protected:
 	void MeleeAttack(UAnimInstance* MyAnimInst);
 	UFUNCTION(BlueprintCallable)
 	void CheckMeleeAttackRange();
-	void CheckGunAttackRange(FVector StartLocation, FVector EndLocation);
+	void CheckGunAttackRange(AGunWeapon* CurrentGunWeapon, FVector StartLocation, FVector EndLocation);
 	void Reload();
 	
 	UFUNCTION()
