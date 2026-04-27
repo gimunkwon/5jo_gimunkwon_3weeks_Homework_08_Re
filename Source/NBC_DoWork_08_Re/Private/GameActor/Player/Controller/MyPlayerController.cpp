@@ -1,6 +1,7 @@
 #include "NBC_DoWork_08_Re/Public/GameActor/Player/Controller/MyPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
+#include "UI/Player/PlayerHUDWidget.h"
 
 AMyPlayerController::AMyPlayerController()
 {
@@ -22,9 +23,10 @@ void AMyPlayerController::BeginPlay()
 	
 	if (Widget_HUD)
 	{
-		if (UUserWidget* PlayerHUD = CreateWidget<UUserWidget>(this,Widget_HUD))
+		WidgetInst_HUD = CreateWidget<UPlayerHUDWidget>(this, Widget_HUD);
+		if (WidgetInst_HUD)
 		{
-			PlayerHUD->AddToViewport();
+			WidgetInst_HUD->AddToViewport();
 		}
 	}
 }
