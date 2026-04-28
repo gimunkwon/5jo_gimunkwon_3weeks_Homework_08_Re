@@ -1,7 +1,6 @@
 #include "NBC_DoWork_08_Re/Public/GameActor/Enemy/MyZombie.h"
 
 #include "BrainComponent.h"
-#include "AI/NavigationSystemBase.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "DataTable/Zombie/DT_ZombieStat.h"
@@ -10,6 +9,7 @@
 #include "UI/Enemy/EnemyStatWidget.h"
 #include "Engine/OverlapResult.h"
 #include "GameActor/Enemy/AIController/AIZombieController.h"
+#include "Global/MyGameState.h"
 
 
 AMyZombie::AMyZombie()
@@ -52,7 +52,7 @@ void AMyZombie::Tick(float DeltaTime)
 void AMyZombie::InitializeStat(const FDataTableRowHandle& RowHandle)
 {
 	if (RowHandle.IsNull()) return;
-	UE_LOG(LogTemp,Warning,TEXT("좀비 스탯 초기화중..."));
+	// UE_LOG(LogTemp,Warning,TEXT("좀비 스탯 초기화중..."));
 	
 	static const FString ZombieContextString = "ZombieDataTable Initialize";
 	
@@ -65,7 +65,6 @@ void AMyZombie::InitializeStat(const FDataTableRowHandle& RowHandle)
 		GetCharacterMovement()->MaxWalkSpeed = ZombieRow->MaxWalkSpeed;
 	}
 }
-
 
 float AMyZombie::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
                             class AController* EventInstigator, AActor* DamageCauser)
@@ -91,10 +90,14 @@ float AMyZombie::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 	
 	return ActualDamage;
 }
-
 void AMyZombie::OnDead()
 {
 	UE_LOG(LogTemp,Warning,TEXT("Zombie 사망!!"));
+	
+	if (AMyGameState* GS = GetWorld()->GetGameState<AMyGameState>())
+	{
+		GS->OnDeadZombie();
+	}
 	
 	AAIController* AIC = Cast<AAIController>(GetController());
 	if (AIC && AIC->GetBrainComponent())

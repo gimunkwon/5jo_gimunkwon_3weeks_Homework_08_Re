@@ -2,7 +2,7 @@
 
 #include "Components/BoxComponent.h"
 #include "DataTable/Level/DT_SpawnZombie.h"
-#include "GameActor/Enemy/MyZombie.h"
+#include "Global/MyGameState.h"
 
 
 ASpawnVolume::ASpawnVolume()
@@ -20,8 +20,13 @@ ASpawnVolume::ASpawnVolume()
 void ASpawnVolume::BeginPlay()
 {
 	Super::BeginPlay();
+	
 	InitializeSpawnPool(WaveIndexValue);
 	SpawnZombieInVolume(WaveIndexValue);
+	if (AMyGameState* GS = Cast<AMyGameState>(GetWorld()->GetGameState()))
+	{
+		GS->RegisterSpawnVolume(this);
+	}
 }
 
 void ASpawnVolume::Tick(float DeltaTime)
@@ -132,4 +137,23 @@ void ASpawnVolume::SpawnZombieInVolume(int32 WaveIndex)
 			}
 		}
 	}
+}
+
+int32 ASpawnVolume::GetSpawnCount(int32 WaveIndex)
+{
+	int32 SpawnCount = 0;
+	switch (WaveIndex)
+	{
+	case 1:
+		SpawnCount = Wave1_Pool.Num();
+		break;
+	case 2:
+		SpawnCount = Wave2_Pool.Num();
+		break;
+	case 3:
+		SpawnCount = Wave3_Pool.Num();
+		break;
+	}
+	
+	return SpawnCount;
 }
