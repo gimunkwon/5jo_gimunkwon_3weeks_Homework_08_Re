@@ -31,6 +31,8 @@ protected:
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="ZombieActor")
 	TArray<TSubclassOf<AActor>> ZombieActor;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="ZombieData")
+	TArray<FName> ZombieDTRow;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="WaveIndex")
 	int32 WaveIndexValue;
 	
