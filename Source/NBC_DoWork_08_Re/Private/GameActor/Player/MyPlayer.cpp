@@ -220,6 +220,11 @@ void AMyPlayer::GunAttack(UAnimInstance* MyAnimInst)
 	}
 	
 	if (!CurrentGun) return;
+	if (CurrentGun->GetCurrentAmmo() == 0)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("탄약없음 재장전 필요"));
+		return;
+	}
 	
 	float CurrentTime = GetWorld()->GetTimeSeconds();
 	

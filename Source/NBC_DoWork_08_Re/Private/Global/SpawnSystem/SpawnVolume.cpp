@@ -2,6 +2,7 @@
 
 #include "Components/BoxComponent.h"
 #include "DataTable/Level/DT_SpawnZombie.h"
+#include "Global/MyGameInstance.h"
 #include "Global/MyGameState.h"
 
 
@@ -51,21 +52,24 @@ void ASpawnVolume::InitializeSpawnPool(int32 WaveIndex)
 {
 	if (!DT_SpawnValue) return;
 	
-	const static FString ContextStiring = "InitialSpawnPool";
-	FSpawnZombie* WaveData = DT_SpawnValue->FindRow<FSpawnZombie>(TEXT("Level1"),ContextStiring);
-	if (WaveData)
+	if (UMyGameInstance* GI = Cast<UMyGameInstance>(GetWorld()->GetGameInstance()))
 	{
-		switch (WaveIndex)
+		const static FString ContextStiring = "InitialSpawnPool";
+		FSpawnZombie* WaveData = DT_SpawnValue->FindRow<FSpawnZombie>(ZombieDTRow[GI->CurrentStageIndex - 1],ContextStiring);
+		if (WaveData)
 		{
-		case 1:
-			CreatePool(WaveData->Wave1_SpawnCount, Wave1_Pool);
-			break;
-		case 2:
-			CreatePool(WaveData->Wave2_SpawnCount, Wave2_Pool);
-			break;
-		case 3:
-			CreatePool(WaveData->Wave3_SpawnCount, Wave3_Pool);
-			break;
+			switch (WaveIndex)
+			{
+			case 1:
+				CreatePool(WaveData->Wave1_SpawnCount, Wave1_Pool);
+				break;
+			case 2:
+				CreatePool(WaveData->Wave2_SpawnCount, Wave2_Pool);
+				break;
+			case 3:
+				CreatePool(WaveData->Wave3_SpawnCount, Wave3_Pool);
+				break;
+			}
 		}
 	}
 }

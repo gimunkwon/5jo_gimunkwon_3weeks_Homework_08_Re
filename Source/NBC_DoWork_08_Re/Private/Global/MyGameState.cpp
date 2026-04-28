@@ -43,7 +43,14 @@ void AMyGameState::EndStage()
 	if (UMyGameInstance* GI = Cast<UMyGameInstance>(GetWorld()->GetGameInstance()))
 	{
 		GI->CurrentStageIndex++;
+		
+		if (GI->CurrentStageIndex > 3)
+		{
+			UE_LOG(LogTemp,Warning,TEXT("게임 클리어!!"))
+			return;
+		}
 	}
+
 	UGameplayStatics::OpenLevel(GetWorld(),LevelNameArr[++CurrentStageIndex - 1]);
 }
 
