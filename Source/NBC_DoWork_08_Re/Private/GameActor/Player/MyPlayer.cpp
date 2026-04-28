@@ -168,7 +168,7 @@ void AMyPlayer::InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleS
 			SpawnedWeapon->SetActorHiddenInGame(true);
 		}
 		
-		if (PlayerBattleState == EPlayerBattleState::Gun)
+		if (BattleState == EPlayerBattleState::Gun)
 		{
 			if (AGunWeapon* WeaponGun = Cast<AGunWeapon>(SpawnedWeapon))
 			{
