@@ -8,4 +8,6 @@ UCLASS()
 class NBC_DOWORK_08_RE_API AMyGameState : public AGameState
 {
 	GENERATED_BODY()
+	
+	
 };
