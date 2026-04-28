@@ -13,18 +13,19 @@ public:
 	
 	void OnDeadZombie();
 	void RegisterSpawnVolume(AActor* SpawnVolume);
+	void RegisterWaveGate(AActor* WaveGate);
 protected:
 	virtual void BeginPlay() override;
 	
 	void StartStage(int32 StageIndex);
 	void EndStage();
 	
-	void StartWave(int32 WaveIndex,int32 WaveZombieCount);
+	void StartWave(int32 WaveIndex);
 	void EndWave();
 	
 	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Object")
-	TArray<TSubclassOf<AActor>> WaveGateArr;
+	UPROPERTY()
+	TArray<AActor*> WaveGateArr;
 	UPROPERTY()
 	TArray<AActor*> SpawnVolumeArr;
 	

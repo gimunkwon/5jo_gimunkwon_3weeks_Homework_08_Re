@@ -1,6 +1,7 @@
 #include "Global/MyGameState.h"
 
 #include "Global/SpawnSystem/SpawnVolume.h"
+#include "Object/GateToNextWave.h"
 
 AMyGameState::AMyGameState()
 {
@@ -16,48 +17,55 @@ void AMyGameState::BeginPlay()
 
 void AMyGameState::StartStage(int32 StageIndex)
 {
-	ASpawnVolume* SpawnVolumes = nullptr;
 	for (AActor* SpawnCount : SpawnVolumeArr)
 	{
-		SpawnVolumes = Cast<ASpawnVolume>(SpawnCount);
-		if (SpawnVolumes)
+		if (ASpawnVolume* SpawnVolumes = Cast<ASpawnVolume>(SpawnCount))
 		{
 			RemainingStageZombieCount += SpawnVolumes->GetSpawnCount(SpawnVolumes->GetSpawnIndex());
 		}
 	}
 	UE_LOG(LogTemp,Warning,TEXT("전체 스테이지 좀비 수 %d"),RemainingStageZombieCount);
 	
-	if (CurrentWaveIndex == 1)
-	{
-		ASpawnVolume* SpawnVolume = Cast<ASpawnVolume>(SpawnVolumeArr[0]);
-		StartWave(CurrentWaveIndex,SpawnVolume->GetSpawnCount(CurrentWaveIndex));
-	}
+	ASpawnVolume* SpawnVolume = Cast<ASpawnVolume>(SpawnVolumeArr[CurrentWaveIndex - 1]);
+	RemainingWaveZombieCount = SpawnVolume->GetSpawnCount(CurrentWaveIndex);
+	StartWave(CurrentWaveIndex);
 }
 
 void AMyGameState::EndStage()
 {
 	UE_LOG(LogTemp,Warning,TEXT("레벨 %d 종료"), CurrentStageIndex);
-	StartStage(CurrentStageIndex++);
 }
 
-void AMyGameState::StartWave(int32 WaveIndex,int32 WaveZombieCount)
+void AMyGameState::StartWave(int32 WaveIndex)
 {
-	RemainingWaveZombieCount = WaveZombieCount;
 	UE_LOG(LogTemp,Warning,TEXT("%d 웨이브 시작!! 현재 웨이브 좀비 수: %d"),WaveIndex,RemainingWaveZombieCount);
 }
 
 void AMyGameState::EndWave()
 {
 	UE_LOG(LogTemp,Warning,TEXT("Wave : [%d] 종료"),CurrentWaveIndex);
+	if (!WaveGateArr.IsEmpty())
+	{
+		WaveGateArr[0]->Destroy();
+		WaveGateArr.RemoveAt(0);
+	}
 	CurrentWaveIndex++;
+	ASpawnVolume* SpawnVolume = Cast<ASpawnVolume>(SpawnVolumeArr[CurrentWaveIndex - 1]);
+	RemainingWaveZombieCount = SpawnVolume->GetSpawnCount(CurrentWaveIndex);
+	StartWave(CurrentWaveIndex);
 }
 
 void AMyGameState::OnDeadZombie()
 {
 	RemainingWaveZombieCount--;
-	if (RemainingWaveZombieCount == 0)
+	RemainingStageZombieCount--;
+	if (RemainingWaveZombieCount == 0 && RemainingStageZombieCount != 0)
 	{
 		EndWave();
+	}
+	if (RemainingStageZombieCount == 0)
+	{
+		EndStage();
 	}
 }
 
@@ -67,7 +75,7 @@ void AMyGameState::RegisterSpawnVolume(AActor* SpawnVolume)
 	
 	if (SpawnVolumeArr.Num() == 3)
 	{
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < SpawnVolumeArr.Num(); ++i)
 		{
 			if (ASpawnVolume* SpawnVolumes = Cast<ASpawnVolume>(SpawnVolumeArr[i]))
 			{
@@ -75,5 +83,21 @@ void AMyGameState::RegisterSpawnVolume(AActor* SpawnVolume)
 			}
 		}
 		StartStage(CurrentStageIndex);
+	}
+}
+
+void AMyGameState::RegisterWaveGate(AActor* WaveGate)
+{
+	WaveGateArr.Add(WaveGate);
+	
+	if (WaveGateArr.Num() == 2)
+	{
+		for (int i = 0; i < WaveGateArr.Num(); ++i)
+		{
+			if (AGateToNextWave* NextGate = Cast<AGateToNextWave>(WaveGateArr[i]))
+			{
+				UE_LOG(LogTemp,Warning,TEXT("Register WaveGate %s"),*NextGate->GetName());
+			}
+		}
 	}
 }
