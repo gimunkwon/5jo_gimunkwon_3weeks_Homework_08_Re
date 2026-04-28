@@ -51,6 +51,7 @@ void AMyPlayer::BeginPlay()
 	if (AMyPlayerController* PC = Cast<AMyPlayerController>(GetController()))
 	{
 		PC->WidgetInst_HUD->UpdatePlayerHPBar(MaxHP, CurrentHP);
+		PC->WidgetInst_HUD->UpdateSelectBorder(PlayerBattleState);
 	}
 }
 
@@ -166,6 +167,17 @@ void AMyPlayer::InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleS
 		{
 			SpawnedWeapon->SetActorHiddenInGame(true);
 		}
+		
+		if (PlayerBattleState == EPlayerBattleState::Gun)
+		{
+			if (AGunWeapon* WeaponGun = Cast<AGunWeapon>(SpawnedWeapon))
+			{
+				if (AMyPlayerController* PC = Cast<AMyPlayerController>(GetController()))
+				{
+					PC->WidgetInst_HUD->UpdateAmmoText(WeaponGun->GetCurrentAmmo(), WeaponGun->GetMaxAmmo());
+				}
+			}
+		}
 	}
 }
 
@@ -174,11 +186,14 @@ void AMyPlayer::SelectWeapon(const FInputActionValue& Value)
 	if (bIsAttacking) return;
 	
 	int32 SlotIndex = static_cast<int>(Value.Get<float>());
-	
 	EPlayerBattleState NewState = (SlotIndex == 1) ? EPlayerBattleState::Melee : EPlayerBattleState::Gun;
 	
 	// 같은 키를 눌렀을때
 	if (PlayerBattleState == NewState) return;
+	
+	
+	AMyPlayerController* PC = Cast<AMyPlayerController>(GetController());
+	if (!PC) return;
 	
 	// 기존 무기가 있을경우 숨겨야함
 	if (WeaponMap.Contains(PlayerBattleState))
@@ -190,6 +205,7 @@ void AMyPlayer::SelectWeapon(const FInputActionValue& Value)
 	{
 		WeaponMap[NewState]->SetActorHiddenInGame(false);
 		PlayerBattleState = NewState;
+		PC->WidgetInst_HUD->UpdateSelectBorder(PlayerBattleState);
 	}
 	
 }
@@ -248,6 +264,11 @@ void AMyPlayer::GunAttack(UAnimInstance* MyAnimInst)
 					
 				WeaponGun->bIsfire();
 				UE_LOG(LogTemp,Warning,TEXT("Current Ammo: %d"),WeaponGun->GetCurrentAmmo());
+				
+				if (AMyPlayerController* PC = Cast<AMyPlayerController>(GetController()))
+				{
+					PC->WidgetInst_HUD->UpdateAmmoText(WeaponGun->GetCurrentAmmo(), WeaponGun->GetMaxAmmo());
+				}
 				
 				CheckGunAttackRange(CurrentGun,StartPos, EndPos);
 			}
@@ -353,6 +374,10 @@ void AMyPlayer::Reload()
 	if (WeaponGun)
 	{
 		WeaponGun->bCanReload();
+		if (AMyPlayerController* PC = Cast<AMyPlayerController>(GetController()))
+		{
+			PC->WidgetInst_HUD->UpdateAmmoText(WeaponGun->GetCurrentAmmo(),WeaponGun->GetMaxAmmo());
+		}
 	}
 }
 
