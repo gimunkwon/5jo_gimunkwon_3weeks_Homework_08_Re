@@ -4,6 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "SpawnVolume.generated.h"
 
+#define MAXVOLUMECOUNT 3
+
 enum class EZombieType : uint8;
 class UBoxComponent;
 
@@ -14,7 +16,10 @@ class NBC_DOWORK_08_RE_API ASpawnVolume : public AActor
 
 public:
 	ASpawnVolume();
+	void InitializeSpawnPool(int32 WaveIndex);
 	void SpawnZombieInVolume(int32 WaveIndex);
+	int32 GetSpawnCount(int32 WaveIndex);
+	int32 GetSpawnIndex() const {return WaveIndexValue;}
 protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category="Mesh")
@@ -30,7 +35,6 @@ protected:
 	int32 WaveIndexValue;
 	
 	FVector RandomSpawnPoint();
-	void InitializeSpawnPool(int32 WaveIndex);
 	void CreatePool(const TMap<EZombieType, int32>& SpawnCountMap, TArray<AActor*>& SpawnPool);
 private:
 	UPROPERTY()
