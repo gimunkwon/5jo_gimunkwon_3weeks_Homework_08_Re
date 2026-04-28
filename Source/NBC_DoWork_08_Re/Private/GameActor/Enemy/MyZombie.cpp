@@ -46,7 +46,7 @@ void AMyZombie::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	DrawDebugSphere(GetWorld(),GetActorLocation(), 150.f, 32, FColor::Blue, false, -1.f, 0, 1.f);
+	// DrawDebugSphere(GetWorld(),GetActorLocation(), 150.f, 32, FColor::Blue, false, -1.f, 0, 1.f);
 }
 
 void AMyZombie::InitializeStat(const FDataTableRowHandle& RowHandle)
