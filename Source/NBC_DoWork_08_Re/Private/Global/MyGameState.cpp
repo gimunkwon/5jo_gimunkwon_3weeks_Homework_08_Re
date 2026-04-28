@@ -1,6 +1,8 @@
 #include "Global/MyGameState.h"
 
+#include "Global/MyGameInstance.h"
 #include "Global/SpawnSystem/SpawnVolume.h"
+#include "Kismet/GameplayStatics.h"
 #include "Object/GateToNextWave.h"
 
 AMyGameState::AMyGameState()
@@ -13,6 +15,10 @@ AMyGameState::AMyGameState()
 void AMyGameState::BeginPlay()
 {
 	Super::BeginPlay();
+	if (UMyGameInstance* GI = Cast<UMyGameInstance>(GetWorld()->GetGameInstance()))
+	{
+		CurrentStageIndex = GI->CurrentStageIndex;
+	}
 }
 
 void AMyGameState::StartStage(int32 StageIndex)
@@ -34,6 +40,11 @@ void AMyGameState::StartStage(int32 StageIndex)
 void AMyGameState::EndStage()
 {
 	UE_LOG(LogTemp,Warning,TEXT("레벨 %d 종료"), CurrentStageIndex);
+	if (UMyGameInstance* GI = Cast<UMyGameInstance>(GetWorld()->GetGameInstance()))
+	{
+		GI->CurrentStageIndex++;
+	}
+	UGameplayStatics::OpenLevel(GetWorld(),LevelNameArr[++CurrentStageIndex - 1]);
 }
 
 void AMyGameState::StartWave(int32 WaveIndex)

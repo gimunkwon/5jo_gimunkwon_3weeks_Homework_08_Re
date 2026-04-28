@@ -23,11 +23,12 @@ protected:
 	void StartWave(int32 WaveIndex);
 	void EndWave();
 	
-	
 	UPROPERTY()
 	TArray<AActor*> WaveGateArr;
 	UPROPERTY()
 	TArray<AActor*> SpawnVolumeArr;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Map")
+	TArray<FName> LevelNameArr;
 	
 private:
 	int32 CurrentStageIndex;
