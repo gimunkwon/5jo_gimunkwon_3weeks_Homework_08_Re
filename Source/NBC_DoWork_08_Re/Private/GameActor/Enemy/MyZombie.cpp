@@ -52,7 +52,7 @@ void AMyZombie::Tick(float DeltaTime)
 void AMyZombie::InitializeStat(const FDataTableRowHandle& RowHandle)
 {
 	if (RowHandle.IsNull()) return;
-	UE_LOG(LogTemp,Warning,TEXT("좀비 스탯 초기화중..."));
+	// UE_LOG(LogTemp,Warning,TEXT("좀비 스탯 초기화중..."));
 	
 	static const FString ZombieContextString = "ZombieDataTable Initialize";
 	
@@ -65,7 +65,6 @@ void AMyZombie::InitializeStat(const FDataTableRowHandle& RowHandle)
 		GetCharacterMovement()->MaxWalkSpeed = ZombieRow->MaxWalkSpeed;
 	}
 }
-
 
 float AMyZombie::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
                             class AController* EventInstigator, AActor* DamageCauser)

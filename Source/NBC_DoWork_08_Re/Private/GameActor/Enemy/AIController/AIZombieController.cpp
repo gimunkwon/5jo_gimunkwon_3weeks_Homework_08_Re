@@ -50,7 +50,7 @@ void AAIZombieController::OnPossess(APawn* InPawn)
 			AIPerceptionComp->ConfigureSense(*SightConfig);
 			AIPerceptionComp->RequestStimuliListenerUpdate();
 			AIPerceptionComp->OnTargetPerceptionUpdated.AddDynamic(this, &AAIZombieController::OnTargetPerceived);
-			UE_LOG(LogTemp,Warning,TEXT("좀비 AI컨트롤러 감지 컴포넌트 초기화 완료"));
+			// UE_LOG(LogTemp,Warning,TEXT("좀비 AI컨트롤러 감지 컴포넌트 초기화 완료"));
 			
 			MyOwner->InitializeStat(RowHandle);
 		}
@@ -58,7 +58,7 @@ void AAIZombieController::OnPossess(APawn* InPawn)
 	
 	if (RunBehaviorTree(BT_Data))
 	{
-		UE_LOG(LogTemp,Warning,TEXT("비헤이비어트리 작동"));
+		// UE_LOG(LogTemp,Warning,TEXT("비헤이비어트리 작동"));
 	}
 }
 
