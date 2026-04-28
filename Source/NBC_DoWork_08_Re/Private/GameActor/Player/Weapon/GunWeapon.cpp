@@ -23,9 +23,11 @@ bool AGunWeapon::bIsfire()
 
 bool AGunWeapon::bCanReload()
 {
-	if (CurrentAmmo == MaxAmmo) return false;
+	if (CurrentAmmo == MAX_AMMO || MaxAmmo == 0) return false;
 	
-	CurrentAmmo = MaxAmmo;
+	MaxAmmo -= MAX_AMMO - CurrentAmmo;
+	CurrentAmmo = MAX_AMMO;
+	
 	UE_LOG(LogTemp,Warning,TEXT("Reload!! CurrentAmmo : %d"),CurrentAmmo);
 	return true;
 }
@@ -40,7 +42,7 @@ void AGunWeapon::InitializeWeaponStat()
 	if (GunWeaponRow)
 	{
 		MaxAmmo = GunWeaponRow->MaxAmmo;
-		CurrentAmmo = MaxAmmo;
+		CurrentAmmo = MAX_AMMO;
 		FireRate = GunWeaponRow->FireRate;
 		MaxDistance = GunWeaponRow->MaxDistance;
 		UE_LOG(LogTemp,Warning,TEXT("총 무기 초기화 완료..."));

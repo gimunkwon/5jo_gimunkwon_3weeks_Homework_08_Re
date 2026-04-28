@@ -4,6 +4,8 @@
 #include "MyWeapon.h"
 #include "GunWeapon.generated.h"
 
+#define MAX_AMMO 30
+
 UCLASS()
 class NBC_DOWORK_08_RE_API AGunWeapon : public AMyWeapon
 {
