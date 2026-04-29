@@ -1,5 +1,6 @@
 #include "Global/MyGameState.h"
 
+#include "Blueprint/UserWidget.h"
 #include "Global/MyGameInstance.h"
 #include "Global/SpawnSystem/SpawnVolume.h"
 #include "Kismet/GameplayStatics.h"
@@ -34,7 +35,20 @@ void AMyGameState::StartStage(int32 StageIndex)
 	
 	ASpawnVolume* SpawnVolume = Cast<ASpawnVolume>(SpawnVolumeArr[CurrentWaveIndex - 1]);
 	RemainingWaveZombieCount = SpawnVolume->GetSpawnCount(CurrentWaveIndex);
-	StartWave(CurrentWaveIndex);
+	
+	if (Widget_StageInfo)
+	{
+		Widget_StageInfoInst = CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(),Widget_StageInfo);
+		if (Widget_StageInfoInst)
+		{
+			Widget_StageInfoInst->AddToViewport();
+			GetWorldTimerManager().SetTimer(StageWidgetTimerHandle,[this]()
+			{
+				Widget_StageInfoInst->RemoveFromParent();
+				StartWave(CurrentWaveIndex);
+			},2.f,false);
+		}
+	}
 }
 
 void AMyGameState::EndStage()
@@ -56,6 +70,18 @@ void AMyGameState::EndStage()
 
 void AMyGameState::StartWave(int32 WaveIndex)
 {
+	if (Widget_WaveInfo)
+	{
+		Widget_WaveInfoInst = CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(),Widget_WaveInfo);
+		if (Widget_WaveInfoInst)
+		{
+			Widget_WaveInfoInst->AddToViewport();
+			GetWorldTimerManager().SetTimer(WaveWidgetTimerHandle,[this]()
+			{
+				Widget_WaveInfoInst->RemoveFromParent();
+			},2.f,false);
+		}
+	}
 	UE_LOG(LogTemp,Warning,TEXT("%d 웨이브 시작!! 현재 웨이브 좀비 수: %d"),WaveIndex,RemainingWaveZombieCount);
 }
 
