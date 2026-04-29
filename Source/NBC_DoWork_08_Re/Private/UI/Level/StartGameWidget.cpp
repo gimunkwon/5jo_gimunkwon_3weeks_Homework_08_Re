@@ -26,4 +26,5 @@ void UStartGameWidget::OnStartBtn()
 void UStartGameWidget::OnExitBtn()
 {
 	UE_LOG(LogTemp,Warning,TEXT("게임종료 버튼 눌림"));
+	UKismetSystemLibrary::QuitGame(GetWorld(),GetWorld()->GetFirstPlayerController(),EQuitPreference::Quit, false);
 }
