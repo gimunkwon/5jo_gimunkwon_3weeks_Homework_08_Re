@@ -86,6 +86,8 @@ protected:
 	TObjectPtr<USoundBase> Sound_GunReload;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Sound")
 	TObjectPtr<USoundBase> Sound_GunDryFire;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Sound")
+	TObjectPtr<USoundBase> Sound_Death;
 #pragma endregion 
 	
 private:

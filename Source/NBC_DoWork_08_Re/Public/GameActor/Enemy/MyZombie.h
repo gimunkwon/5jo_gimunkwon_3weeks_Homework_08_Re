@@ -35,6 +35,11 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animations")
 	TObjectPtr<UAnimMontage> AM_Attack;
 	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Sound")
+	TObjectPtr<USoundBase> Sound_ZombieAtt;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Sound")
+	TObjectPtr<USoundBase> Sound_ZombieDeath;
+	
 	void OnDead();
 private:
 	float HP;

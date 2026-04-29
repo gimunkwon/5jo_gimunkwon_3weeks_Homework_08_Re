@@ -419,6 +419,8 @@ void AMyPlayer::OnDead()
 	bIsDead = true;
 	UE_LOG(LogTemp,Warning,TEXT("플레이어 사망..."));
 	
+	UGameplayStatics::PlaySound2D(GetWorld(),Sound_Death);
+	
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
 	
