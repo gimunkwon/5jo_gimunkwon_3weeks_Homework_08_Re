@@ -422,7 +422,10 @@ void AMyPlayer::OnDead()
 		PC->bShowMouseCursor = true;
 		DisableInput(PC);
 	}
-	
+}
+
+void AMyPlayer::OnDeadAndAddWidget()
+{
 	if (AMyGameState* GS = Cast<AMyGameState>(GetWorld()->GetGameState()))
 	{
 		GS->GameOver(true);
