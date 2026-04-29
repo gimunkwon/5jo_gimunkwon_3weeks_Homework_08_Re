@@ -5,6 +5,8 @@
 #include "Global/SpawnSystem/SpawnVolume.h"
 #include "Kismet/GameplayStatics.h"
 #include "Object/GateToNextWave.h"
+#include "UI/Level/StageNotifyWidget.h"
+#include "UI/Level/WaveNotifyWidget.h"
 
 AMyGameState::AMyGameState()
 {
@@ -19,6 +21,7 @@ void AMyGameState::BeginPlay()
 	if (UMyGameInstance* GI = Cast<UMyGameInstance>(GetWorld()->GetGameInstance()))
 	{
 		CurrentStageIndex = GI->CurrentStageIndex;
+		UE_LOG(LogTemp,Warning,TEXT("GameState CurrentStateIndex : %d | GameInst StageIndex : %d"),CurrentStageIndex,GI->CurrentStageIndex);
 	}
 }
 
@@ -38,10 +41,14 @@ void AMyGameState::StartStage(int32 StageIndex)
 	
 	if (Widget_StageInfo)
 	{
-		Widget_StageInfoInst = CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(),Widget_StageInfo);
+		if (!Widget_StageInfoInst) Widget_StageInfoInst = CreateWidget<UStageNotifyWidget>(GetWorld()->GetFirstPlayerController(),Widget_StageInfo);
+		
 		if (Widget_StageInfoInst)
 		{
 			Widget_StageInfoInst->AddToViewport();
+			if (UMyGameInstance* GI = Cast<UMyGameInstance>(GetWorld()->GetGameInstance()))
+			Widget_StageInfoInst->UpdateStageInfoText(GI->CurrentStageIndex);
+			
 			GetWorldTimerManager().SetTimer(StageWidgetTimerHandle,[this]()
 			{
 				Widget_StageInfoInst->RemoveFromParent();
@@ -72,10 +79,12 @@ void AMyGameState::StartWave(int32 WaveIndex)
 {
 	if (Widget_WaveInfo)
 	{
-		Widget_WaveInfoInst = CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(),Widget_WaveInfo);
+		Widget_WaveInfoInst = CreateWidget<UWaveNotifyWidget>(GetWorld()->GetFirstPlayerController(),Widget_WaveInfo);
 		if (Widget_WaveInfoInst)
 		{
 			Widget_WaveInfoInst->AddToViewport();
+			Widget_WaveInfoInst->UpdateWaveInfoText(CurrentWaveIndex);
+			
 			GetWorldTimerManager().SetTimer(WaveWidgetTimerHandle,[this]()
 			{
 				Widget_WaveInfoInst->RemoveFromParent();

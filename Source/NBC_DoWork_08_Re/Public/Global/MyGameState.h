@@ -4,6 +4,9 @@
 #include "GameFramework/GameState.h"
 #include "MyGameState.generated.h"
 
+class UWaveNotifyWidget;
+class UStageNotifyWidget;
+
 UCLASS()
 class NBC_DOWORK_08_RE_API AMyGameState : public AGameState
 {
@@ -33,11 +36,11 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
 	TSubclassOf<UUserWidget> Widget_WaveInfo;
 	UPROPERTY()
-	TObjectPtr<UUserWidget> Widget_WaveInfoInst;
+	TObjectPtr<UWaveNotifyWidget> Widget_WaveInfoInst;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
 	TSubclassOf<UUserWidget> Widget_StageInfo;
 	UPROPERTY()
-	TObjectPtr<UUserWidget> Widget_StageInfoInst;
+	TObjectPtr<UStageNotifyWidget> Widget_StageInfoInst;
 	
 private:
 	int32 CurrentStageIndex;
