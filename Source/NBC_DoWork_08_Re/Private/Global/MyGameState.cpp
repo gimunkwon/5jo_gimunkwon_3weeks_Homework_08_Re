@@ -126,14 +126,16 @@ void AMyGameState::GameOver(bool bIsDead)
 		if (Widget_GameOverInst)
 		{
 			Widget_GameOverInst->AddToViewport();
-			//TODO:: 플레이어가 죽었는지 정상적으로 클리어가 됬는지에 따른 GameOverWidget Text값 조정
 			if (!bIsDead)
 			{
 				UE_LOG(LogTemp,Warning,TEXT("게임 클리어!!"));
+				Widget_GameOverInst->UpdateGameOverText(bIsDead);
 			}
 			else
 			{
 				UE_LOG(LogTemp,Warning,TEXT("게임 오버..."));
+				Widget_GameOverInst->UpdateGameOverText(bIsDead);
+				
 				if (OnPlayerDead.IsBound())
 				{
 					OnPlayerDead.Broadcast(bIsDead);
