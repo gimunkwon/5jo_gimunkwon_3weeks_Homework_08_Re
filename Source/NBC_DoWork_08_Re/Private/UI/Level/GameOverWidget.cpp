@@ -39,7 +39,7 @@ void UGameOverWidget::UpdateGameOverText(bool bIsPlayerDead)
 
 void UGameOverWidget::OnReturnStartClicked()
 {
-	UGameplayStatics::OpenLevel(GetWorld(),TEXT("L_StatrLevel"));
+	UGameplayStatics::OpenLevel(GetWorld(),TEXT("/Game/MyAsset/Level/L_StatrLevel"));
 	if (UMyGameInstance* GI = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
 	{
 		GI->InitializeGameInstanceValue();

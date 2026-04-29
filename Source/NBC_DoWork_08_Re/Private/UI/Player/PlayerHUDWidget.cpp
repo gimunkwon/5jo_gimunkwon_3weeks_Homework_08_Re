@@ -1,6 +1,5 @@
 #include "UI/Player/PlayerHUDWidget.h"
 
-#include "AssetViewUtils.h"
 #include "Components/Border.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
