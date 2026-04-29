@@ -78,6 +78,7 @@ void AMyGameState::EndStage()
 		if (GI->CurrentStageIndex > 3)
 		{
 			UE_LOG(LogTemp,Warning,TEXT("게임 클리어!!"))
+			GameOver(false);
 			return;
 		}
 	}
