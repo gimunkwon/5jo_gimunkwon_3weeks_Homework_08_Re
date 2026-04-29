@@ -1,9 +1,21 @@
 #include "UI/Player/PlayerHUDWidget.h"
 
+#include "AssetViewUtils.h"
 #include "Components/Border.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "GameActor/Player/MyPlayer.h"
+#include "Global/MyGameState.h"
+
+void UPlayerHUDWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	
+	if (AMyGameState* GS = Cast<AMyGameState>(GetWorld()->GetGameState()))
+	{
+		GS->OnStartWave.AddDynamic( this, &UPlayerHUDWidget::UpdateStageAndWaveText);
+	}
+}
 
 void UPlayerHUDWidget::UpdatePlayerHPBar(float MaxHP, float CurrentHP)
 {
@@ -37,5 +49,14 @@ void UPlayerHUDWidget::UpdateAmmoText(int32 CurrentAmmo, int32 MaxAmmo)
 	{
 		FString AmmoText = FString::Printf(TEXT("%d / %d"),CurrentAmmo,MaxAmmo);
 		Text_GunAmmo->SetText(FText::FromString(AmmoText));
+	}
+}
+
+void UPlayerHUDWidget::UpdateStageAndWaveText(int32 CurrentStage, int32 CurrentWave)
+{
+	if (Text_StageAWave)
+	{
+		FString StageAWaveString = FString::Printf(TEXT("Stage : %d | Wave : %d"),CurrentStage,CurrentWave);
+		Text_StageAWave->SetText(FText::FromString(StageAWaveString));
 	}
 }

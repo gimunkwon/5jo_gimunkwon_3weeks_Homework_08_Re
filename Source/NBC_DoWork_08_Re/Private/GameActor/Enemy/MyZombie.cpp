@@ -111,7 +111,6 @@ void AMyZombie::OnDead()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
-	//TODO:: Death애님 몽타주 실행
 	if (AM_Dead)
 	{
 		if (UAnimInstance* AnimInst = GetMesh()->GetAnimInstance())
@@ -122,6 +121,7 @@ void AMyZombie::OnDead()
 			AnimInst->Montage_SetEndDelegate(EndMontage,AM_Dead);
 		}
 	}
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(),Sound_ZombieDeath,GetActorLocation());
 	
 	SetLifeSpan(3.f);
 }
@@ -133,6 +133,7 @@ void AMyZombie::AttackToPlayer(AActor* Attacked_Actor)
 	if (AM_Attack)
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(AM_Attack);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(),Sound_ZombieAtt,GetActorLocation());
 	}
 }
 

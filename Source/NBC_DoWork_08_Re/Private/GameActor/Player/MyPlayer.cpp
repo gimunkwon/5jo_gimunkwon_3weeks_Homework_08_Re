@@ -3,7 +3,6 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
-#include "KismetTraceUtils.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/OverlapResult.h"
 #include "GameActor/Player/Animations/MyPlayerAnimInst.h"
@@ -249,6 +248,7 @@ void AMyPlayer::GunAttack(UAnimInstance* MyAnimInst)
 	if (CurrentGun->GetCurrentAmmo() == 0)
 	{
 		UE_LOG(LogTemp,Warning,TEXT("탄약없음 재장전 필요"));
+		UGameplayStatics::PlaySound2D(GetWorld(),Sound_GunDryFire);
 		return;
 	}
 	
@@ -261,6 +261,7 @@ void AMyPlayer::GunAttack(UAnimInstance* MyAnimInst)
 			MyAnimInst->Montage_Play(AM_GunAttack);
 		}
 		UE_LOG(LogTemp,Warning,TEXT("총 발사"));
+		UGameplayStatics::PlaySound2D(GetWorld(),Sound_GunFire);
 		CurrentGun->SetLastFireTime(CurrentTime);
 		
 		if (WeaponMap.Contains(PlayerBattleState))
@@ -323,6 +324,7 @@ void AMyPlayer::CheckMeleeAttackRange()
 	bool bHit = GetWorld()->OverlapMultiByChannel(OverlapsResults,Center,Rotation,ECC_GameTraceChannel1, BoxShape,Params);
 	UE_LOG(LogTemp,Warning,TEXT("전체 히트 개수 : %d"),OverlapsResults.Num());
 	DrawDebugBox(GetWorld(), Center, BoxExtent, Rotation, bHit ? FColor::Red : FColor::Yellow, false, 0.5f, 0, 1.f);
+	UGameplayStatics::PlaySound2D(GetWorld(),Sound_MeleeAtt);
 	
 	if (!OverlapsResults.IsEmpty())
 	{
@@ -383,7 +385,10 @@ void AMyPlayer::Reload()
 	}
 	if (WeaponGun)
 	{
-		WeaponGun->bCanReload();
+		if (WeaponGun->bCanReload())
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(),Sound_GunReload);
+		}
 		if (AMyPlayerController* PC = Cast<AMyPlayerController>(GetController()))
 		{
 			PC->WidgetInst_HUD->UpdateAmmoText(WeaponGun->GetCurrentAmmo(),WeaponGun->GetMaxAmmo());
@@ -413,6 +418,8 @@ void AMyPlayer::OnDead()
 	if (bIsDead) return;
 	bIsDead = true;
 	UE_LOG(LogTemp,Warning,TEXT("플레이어 사망..."));
+	
+	UGameplayStatics::PlaySound2D(GetWorld(),Sound_Death);
 	
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));

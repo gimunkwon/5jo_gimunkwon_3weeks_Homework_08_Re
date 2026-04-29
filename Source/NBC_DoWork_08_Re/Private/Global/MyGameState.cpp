@@ -102,6 +102,10 @@ void AMyGameState::StartWave(int32 WaveIndex)
 			},2.f,false);
 		}
 	}
+	if (OnStartWave.IsBound())
+	{
+		OnStartWave.Broadcast(CurrentStageIndex,CurrentWaveIndex);
+	}
 	UE_LOG(LogTemp,Warning,TEXT("%d 웨이브 시작!! 현재 웨이브 좀비 수: %d"),WaveIndex,RemainingWaveZombieCount);
 }
 

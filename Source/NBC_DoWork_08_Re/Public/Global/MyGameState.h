@@ -9,6 +9,7 @@ class UWaveNotifyWidget;
 class UStageNotifyWidget;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerDead, bool, bIsPlayerDead);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStartWave, int32, CurrentStageIndex, int32, CurrentWaveIndex);
 
 UCLASS()
 class NBC_DOWORK_08_RE_API AMyGameState : public AGameState
@@ -24,6 +25,8 @@ public:
 	
 	UPROPERTY()
 	FOnPlayerDead OnPlayerDead;
+	UPROPERTY()
+	FOnStartWave OnStartWave;
 protected:
 	virtual void BeginPlay() override;
 	
