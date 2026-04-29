@@ -15,6 +15,8 @@ class NBC_DOWORK_08_RE_API UMyPlayerAnimInst : public UAnimInstance
 public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="State")
+	bool bIsPlayerDead;
 	
 protected:
 	UPROPERTY(VisibleInstanceOnly,BlueprintReadOnly,Category="Instance")
@@ -23,4 +25,5 @@ protected:
 	EPlayerBattleState CurrentBattleState;
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite,Category="Speed")
 	float PlayerSpeed;
+	
 };
