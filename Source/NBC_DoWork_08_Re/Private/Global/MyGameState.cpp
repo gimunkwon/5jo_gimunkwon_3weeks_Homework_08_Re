@@ -82,8 +82,11 @@ void AMyGameState::EndStage()
 			return;
 		}
 	}
-
-	UGameplayStatics::OpenLevel(GetWorld(),LevelNameArr[++CurrentStageIndex - 1]);
+	GetWorldTimerManager().SetTimer(ChangeLevelTimerHandle,[this]()
+	{
+		UGameplayStatics::OpenLevel(GetWorld(),LevelNameArr[++CurrentStageIndex - 1]);
+	},2.f,false);
+	
 }
 
 void AMyGameState::StartWave(int32 WaveIndex)
@@ -128,6 +131,7 @@ void AMyGameState::EndWave()
 	CurrentWaveIndex++;
 	ASpawnVolume* SpawnVolume = Cast<ASpawnVolume>(SpawnVolumeArr[CurrentWaveIndex - 1]);
 	RemainingWaveZombieCount = SpawnVolume->GetSpawnCount(CurrentWaveIndex);
+	
 	StartWave(CurrentWaveIndex);
 }
 

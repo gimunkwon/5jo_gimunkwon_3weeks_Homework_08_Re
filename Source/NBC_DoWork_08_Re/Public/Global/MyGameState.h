@@ -72,4 +72,5 @@ private:
 	
 	FTimerHandle StageWidgetTimerHandle;
 	FTimerHandle WaveWidgetTimerHandle;
+	FTimerHandle ChangeLevelTimerHandle;
 };
