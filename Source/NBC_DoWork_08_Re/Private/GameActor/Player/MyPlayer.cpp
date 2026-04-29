@@ -5,9 +5,11 @@
 #include "EnhancedInputComponent.h"
 #include "KismetTraceUtils.h"
 #include "Engine/OverlapResult.h"
+#include "GameActor/Player/Animations/MyPlayerAnimInst.h"
 #include "GameActor/Player/Weapon/GunWeapon.h"
 #include "GameActor/Player/Weapon/MeleeWeapon.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Global/MyGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "NBC_DoWork_08_Re/Public/GameActor/Player/Controller/MyPlayerController.h"
@@ -39,6 +41,7 @@ AMyPlayer::AMyPlayer()
 	InterpSpeed = 30.f;
 	MaxHP = 100.f;
 	CurrentHP = MaxHP;
+	bIsDead = false;
 }
 
 void AMyPlayer::BeginPlay()
@@ -387,6 +390,8 @@ float AMyPlayer::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	
 	CurrentHP = FMath::Clamp(CurrentHP - ActualDamage, 0.f, MaxHP);
+	if (CurrentHP <= 0.f) OnDead();
+	
 	UE_LOG(LogTemp,Warning,TEXT("플레이어 공격 받음 현재 HP %f"),CurrentHP);
 	if (AMyPlayerController* PC = Cast<AMyPlayerController>(GetController()))
 	{
@@ -394,4 +399,28 @@ float AMyPlayer::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 	}
 	
 	return ActualDamage;
+}
+
+void AMyPlayer::OnDead()
+{
+	if (bIsDead) return;
+	
+	bIsDead = true;
+	UMyPlayerAnimInst* AnimInst = Cast<UMyPlayerAnimInst>(GetMesh()->GetAnimInstance());
+	if (!AnimInst) return;
+	AnimInst->bIsPlayerDead = true;
+	
+	UE_LOG(LogTemp,Warning,TEXT("플레이어 사망..."));
+	
+	if (AMyPlayerController* PC = Cast<AMyPlayerController>(GetController()))
+	{
+		PC->SetInputMode(FInputModeUIOnly());
+		PC->bShowMouseCursor = true;
+		DisableInput(PC);
+	}
+	
+	if (AMyGameState* GS = Cast<AMyGameState>(GetWorld()->GetGameState()))
+	{
+		GS->GameOver(true);
+	}
 }

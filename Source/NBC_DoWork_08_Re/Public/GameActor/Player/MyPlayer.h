@@ -25,7 +25,10 @@ class NBC_DOWORK_08_RE_API AMyPlayer : public ACharacter
 public:
 	AMyPlayer();
 	UFUNCTION(BlueprintCallable)
-	EPlayerBattleState GetPlayerBattleState() const {return PlayerBattleState;}
+	FORCEINLINE EPlayerBattleState GetPlayerBattleState() const {return PlayerBattleState;}
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetbIsDead() const {return bIsDead;}
+
 protected:
 	virtual void BeginPlay() override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
@@ -70,10 +73,12 @@ protected:
 	UFUNCTION()
 	void EndAttackMontage(UAnimMontage* Montage, bool bIsEnd);
 #pragma endregion 
+	void OnDead();
 	
 private:
 	EPlayerBattleState PlayerBattleState;
 	bool bIsAttacking;
+	bool bIsDead;
 	
 	float CurrentHP;
 	float MaxHP;
