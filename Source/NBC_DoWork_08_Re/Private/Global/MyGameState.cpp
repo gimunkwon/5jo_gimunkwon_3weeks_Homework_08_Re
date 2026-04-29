@@ -106,6 +106,14 @@ void AMyGameState::StartWave(int32 WaveIndex)
 	{
 		OnStartWave.Broadcast(CurrentStageIndex,CurrentWaveIndex);
 	}
+	if (OnStageZombieCount.IsBound())
+	{
+		OnStageZombieCount.Broadcast(RemainingStageZombieCount);
+	}
+	if (OnWaveZombieCount.IsBound())
+	{
+		OnWaveZombieCount.Broadcast(RemainingWaveZombieCount);
+	}
 	UE_LOG(LogTemp,Warning,TEXT("%d 웨이브 시작!! 현재 웨이브 좀비 수: %d"),WaveIndex,RemainingWaveZombieCount);
 }
 
@@ -148,14 +156,22 @@ void AMyGameState::GameOver(bool bIsDead)
 			}
 		}
 	}
-	
-	
 }
 
 void AMyGameState::OnDeadZombie()
 {
-	RemainingWaveZombieCount--;
 	RemainingStageZombieCount--;
+	RemainingWaveZombieCount--;
+	if (OnStageZombieCount.IsBound())
+	{
+		OnStageZombieCount.Broadcast(RemainingStageZombieCount);
+	}
+	
+	if (OnWaveZombieCount.IsBound())
+	{
+		OnWaveZombieCount.Broadcast(RemainingWaveZombieCount);
+	}
+	
 	if (RemainingWaveZombieCount == 0 && RemainingStageZombieCount != 0)
 	{
 		EndWave();
