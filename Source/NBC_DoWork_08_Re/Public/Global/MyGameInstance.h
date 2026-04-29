@@ -13,4 +13,6 @@ public:
 	
 	int32 CurrentStageIndex;
 	bool bIsStarted;
+	
+	void InitializeGameInstanceValue();
 };
