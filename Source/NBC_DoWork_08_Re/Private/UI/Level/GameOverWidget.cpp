@@ -1,6 +1,23 @@
 #include "UI/Level/GameOverWidget.h"
 
+#include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Global/MyGameInstance.h"
+#include "Kismet/GameplayStatics.h"
+
+void UGameOverWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	
+	if (Btn_ReturnStart)
+	{
+		Btn_ReturnStart->OnClicked.AddDynamic(this, &UGameOverWidget::OnReturnStartClicked);
+	}
+	if (Btn_Exit)
+	{
+		Btn_Exit->OnClicked.AddDynamic(this, &UGameOverWidget::OnExitClicked);
+	}
+}
 
 void UGameOverWidget::UpdateGameOverText(bool bIsPlayerDead)
 {
@@ -18,4 +35,19 @@ void UGameOverWidget::UpdateGameOverText(bool bIsPlayerDead)
 			Text_GameOver->SetText(FText::FromString(GameOverText));
 		}
 	}
+}
+
+void UGameOverWidget::OnReturnStartClicked()
+{
+	UGameplayStatics::OpenLevel(GetWorld(),TEXT("L_StatrLevel"));
+	if (UMyGameInstance* GI = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
+	{
+		GI->InitializeGameInstanceValue();
+	}
+}
+
+void UGameOverWidget::OnExitClicked()
+{
+	UE_LOG(LogTemp,Warning,TEXT("게임종료"));
+	
 }
