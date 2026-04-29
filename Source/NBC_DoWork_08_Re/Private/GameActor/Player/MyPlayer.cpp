@@ -4,6 +4,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "KismetTraceUtils.h"
+#include "Components/CapsuleComponent.h"
 #include "Engine/OverlapResult.h"
 #include "GameActor/Player/Animations/MyPlayerAnimInst.h"
 #include "GameActor/Player/Weapon/GunWeapon.h"
@@ -404,13 +405,16 @@ float AMyPlayer::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 void AMyPlayer::OnDead()
 {
 	if (bIsDead) return;
-	
 	bIsDead = true;
-	UMyPlayerAnimInst* AnimInst = Cast<UMyPlayerAnimInst>(GetMesh()->GetAnimInstance());
-	if (!AnimInst) return;
-	AnimInst->bIsPlayerDead = true;
-	
 	UE_LOG(LogTemp,Warning,TEXT("플레이어 사망..."));
+	
+	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("NoCollision"));
+	
+	if (UMyPlayerAnimInst* AnimInst = Cast<UMyPlayerAnimInst>(GetMesh()->GetAnimInstance()))
+	{
+		AnimInst->bIsPlayerDead = true;
+	}
 	
 	if (AMyPlayerController* PC = Cast<AMyPlayerController>(GetController()))
 	{
