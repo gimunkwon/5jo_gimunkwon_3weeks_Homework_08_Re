@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Weapon/GunWeapon.h"
 #include "MyPlayer.generated.h"
 
 class AGunWeapon;
@@ -76,6 +77,16 @@ protected:
 	void OnDead();
 	UFUNCTION(BlueprintCallable)
 	void OnDeadAndAddWidget();
+#pragma region Sound
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Sound")
+	TObjectPtr<USoundBase> Sound_GunFire;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Sound")
+	TObjectPtr<USoundBase> Sound_MeleeAtt;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Sound")
+	TObjectPtr<USoundBase> Sound_GunReload;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Sound")
+	TObjectPtr<USoundBase> Sound_GunDryFire;
+#pragma endregion 
 	
 private:
 	EPlayerBattleState PlayerBattleState;
