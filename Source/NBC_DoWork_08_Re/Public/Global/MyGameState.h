@@ -4,6 +4,7 @@
 #include "GameFramework/GameState.h"
 #include "MyGameState.generated.h"
 
+class UGameOverWidget;
 class UWaveNotifyWidget;
 class UStageNotifyWidget;
 
@@ -17,6 +18,7 @@ public:
 	void OnDeadZombie();
 	void RegisterSpawnVolume(AActor* SpawnVolume);
 	void RegisterWaveGate(AActor* WaveGate);
+	void GameOver(bool bIsDead);
 protected:
 	virtual void BeginPlay() override;
 	
@@ -33,6 +35,7 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Map")
 	TArray<FName> LevelNameArr;
 	
+#pragma region Widget
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
 	TSubclassOf<UUserWidget> Widget_WaveInfo;
 	UPROPERTY()
@@ -41,6 +44,11 @@ protected:
 	TSubclassOf<UUserWidget> Widget_StageInfo;
 	UPROPERTY()
 	TObjectPtr<UStageNotifyWidget> Widget_StageInfoInst;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
+	TSubclassOf<UUserWidget> Widget_GameOver;
+	UPROPERTY()
+	TObjectPtr<UGameOverWidget> Widget_GameOverInst;
+#pragma endregion
 	
 private:
 	int32 CurrentStageIndex;

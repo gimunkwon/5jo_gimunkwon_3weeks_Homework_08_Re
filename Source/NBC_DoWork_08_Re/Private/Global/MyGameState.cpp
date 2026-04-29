@@ -5,6 +5,7 @@
 #include "Global/SpawnSystem/SpawnVolume.h"
 #include "Kismet/GameplayStatics.h"
 #include "Object/GateToNextWave.h"
+#include "UI/Level/GameOverWidget.h"
 #include "UI/Level/StageNotifyWidget.h"
 #include "UI/Level/WaveNotifyWidget.h"
 
@@ -27,6 +28,16 @@ void AMyGameState::BeginPlay()
 
 void AMyGameState::StartStage(int32 StageIndex)
 {
+	UMyGameInstance* GI = nullptr;
+	GI = Cast<UMyGameInstance>(GetWorld()->GetGameInstance());
+	if (GI)
+	{
+		if(GI->CurrentStageIndex > 3)
+		{
+			GameOver(false);
+		}
+	}
+	
 	for (AActor* SpawnCount : SpawnVolumeArr)
 	{
 		if (ASpawnVolume* SpawnVolumes = Cast<ASpawnVolume>(SpawnCount))
@@ -46,7 +57,6 @@ void AMyGameState::StartStage(int32 StageIndex)
 		if (Widget_StageInfoInst)
 		{
 			Widget_StageInfoInst->AddToViewport();
-			if (UMyGameInstance* GI = Cast<UMyGameInstance>(GetWorld()->GetGameInstance()))
 			Widget_StageInfoInst->UpdateStageInfoText(GI->CurrentStageIndex);
 			
 			GetWorldTimerManager().SetTimer(StageWidgetTimerHandle,[this]()
@@ -106,6 +116,28 @@ void AMyGameState::EndWave()
 	ASpawnVolume* SpawnVolume = Cast<ASpawnVolume>(SpawnVolumeArr[CurrentWaveIndex - 1]);
 	RemainingWaveZombieCount = SpawnVolume->GetSpawnCount(CurrentWaveIndex);
 	StartWave(CurrentWaveIndex);
+}
+
+void AMyGameState::GameOver(bool bIsDead)
+{
+	if (Widget_GameOver)
+	{
+		Widget_GameOverInst = CreateWidget<UGameOverWidget>(GetWorld()->GetFirstPlayerController(),Widget_GameOver);
+		if (Widget_GameOverInst)
+		{
+			Widget_GameOverInst->AddToViewport();
+			//TODO:: 플레이어가 죽었는지 정상적으로 클리어가 됬는지에 따른 GameOverWidget Text값 조정
+			if (!bIsDead)
+			{
+				UE_LOG(LogTemp,Warning,TEXT("게임 클리어!!"));
+			}
+			else
+			{
+				UE_LOG(LogTemp,Warning,TEXT("게임 오버..."));
+			}
+		}
+	}
+	
 }
 
 void AMyGameState::OnDeadZombie()
