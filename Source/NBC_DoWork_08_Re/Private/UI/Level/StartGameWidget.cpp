@@ -20,7 +20,7 @@ void UStartGameWidget::NativeConstruct()
 void UStartGameWidget::OnStartBtn()
 {
 	UE_LOG(LogTemp,Warning,TEXT("스타트 버튼 눌림"));
-	UGameplayStatics::OpenLevel(GetWorld(),TEXT("L_Level1"));
+	UGameplayStatics::OpenLevel(GetWorld(),TEXT("/Game/MyAsset/Level/L_Level1"));
 }
 
 void UStartGameWidget::OnExitBtn()
