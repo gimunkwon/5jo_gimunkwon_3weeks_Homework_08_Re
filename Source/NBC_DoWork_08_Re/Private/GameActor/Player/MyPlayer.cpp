@@ -54,8 +54,11 @@ void AMyPlayer::BeginPlay()
 	
 	if (AMyPlayerController* PC = Cast<AMyPlayerController>(GetController()))
 	{
-		PC->WidgetInst_HUD->UpdatePlayerHPBar(MaxHP, CurrentHP);
-		PC->WidgetInst_HUD->UpdateSelectBorder(PlayerBattleState);
+		if (PC->WidgetInst_HUD)
+		{
+			PC->WidgetInst_HUD->UpdatePlayerHPBar(MaxHP, CurrentHP);
+			PC->WidgetInst_HUD->UpdateSelectBorder(PlayerBattleState);
+		}
 	}
 }
 
@@ -178,7 +181,10 @@ void AMyPlayer::InitializeWeapon(TSubclassOf<AActor> WeaponClass, EPlayerBattleS
 			{
 				if (AMyPlayerController* PC = Cast<AMyPlayerController>(GetController()))
 				{
-					PC->WidgetInst_HUD->UpdateAmmoText(WeaponGun->GetCurrentAmmo(), WeaponGun->GetMaxAmmo());
+					if (PC->WidgetInst_HUD)
+					{
+						PC->WidgetInst_HUD->UpdateAmmoText(WeaponGun->GetCurrentAmmo(), WeaponGun->GetMaxAmmo());
+					}
 				}
 			}
 		}
