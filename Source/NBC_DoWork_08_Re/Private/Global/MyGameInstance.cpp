@@ -3,4 +3,5 @@
 UMyGameInstance::UMyGameInstance()
 {
 	CurrentStageIndex = 1;
+	bIsStarted = false;
 }

@@ -12,4 +12,5 @@ public:
 	UMyGameInstance();
 	
 	int32 CurrentStageIndex;
+	bool bIsStarted;
 };
