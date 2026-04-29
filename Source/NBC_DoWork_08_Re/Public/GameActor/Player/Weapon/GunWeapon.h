@@ -4,6 +4,8 @@
 #include "MyWeapon.h"
 #include "GunWeapon.generated.h"
 
+#define MAX_AMMO 30
+
 UCLASS()
 class NBC_DOWORK_08_RE_API AGunWeapon : public AMyWeapon
 {
@@ -15,6 +17,7 @@ public:
 	bool bIsfire();
 	bool bCanReload();
 	FORCEINLINE int32 GetCurrentAmmo() const {return CurrentAmmo;}
+	FORCEINLINE int32 GetMaxAmmo() const {return MaxAmmo;}
 	FORCEINLINE float GetLastFireTime() const {return LastFireTime;}
 	FORCEINLINE float GetGunMaxDistance() const {return MaxDistance;}
 	FORCEINLINE float GetFireRate() const {return FireRate;}

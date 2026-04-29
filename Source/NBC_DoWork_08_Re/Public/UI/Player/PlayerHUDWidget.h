@@ -4,6 +4,9 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerHUDWidget.generated.h"
 
+class UTextBlock;
+enum class EPlayerBattleState : uint8;
+class UBorder;
 class UProgressBar;
 
 UCLASS()
@@ -12,8 +15,15 @@ class NBC_DOWORK_08_RE_API UPlayerHUDWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	void UpdatePlayerHPBar(float MaxHP, float CurrentHP);
-	
+	void UpdateSelectBorder(EPlayerBattleState CurrentState);
+	void UpdateAmmoText(int32 CurrentAmmo, int32 MaxAmmo);
 protected:
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UProgressBar> Progress_HP;
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UBorder> Border_Bat;
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UBorder> Border_Gun;
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UTextBlock> Text_GunAmmo;
 };

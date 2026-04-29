@@ -30,9 +30,21 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Map")
 	TArray<FName> LevelNameArr;
 	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
+	TSubclassOf<UUserWidget> Widget_WaveInfo;
+	UPROPERTY()
+	TObjectPtr<UUserWidget> Widget_WaveInfoInst;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
+	TSubclassOf<UUserWidget> Widget_StageInfo;
+	UPROPERTY()
+	TObjectPtr<UUserWidget> Widget_StageInfoInst;
+	
 private:
 	int32 CurrentStageIndex;
 	int32 CurrentWaveIndex;
 	int32 RemainingStageZombieCount;
 	int32 RemainingWaveZombieCount;
+	
+	FTimerHandle StageWidgetTimerHandle;
+	FTimerHandle WaveWidgetTimerHandle;
 };
