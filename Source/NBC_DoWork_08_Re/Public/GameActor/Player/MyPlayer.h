@@ -74,6 +74,8 @@ protected:
 	void EndAttackMontage(UAnimMontage* Montage, bool bIsEnd);
 #pragma endregion 
 	void OnDead();
+	UFUNCTION(BlueprintCallable)
+	void OnDeadAndAddWidget();
 	
 private:
 	EPlayerBattleState PlayerBattleState;
