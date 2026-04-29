@@ -5,6 +5,9 @@
 #include "Global/SpawnSystem/SpawnVolume.h"
 #include "Kismet/GameplayStatics.h"
 #include "Object/GateToNextWave.h"
+#include "UI/Level/GameOverWidget.h"
+#include "UI/Level/StageNotifyWidget.h"
+#include "UI/Level/WaveNotifyWidget.h"
 
 AMyGameState::AMyGameState()
 {
@@ -19,11 +22,22 @@ void AMyGameState::BeginPlay()
 	if (UMyGameInstance* GI = Cast<UMyGameInstance>(GetWorld()->GetGameInstance()))
 	{
 		CurrentStageIndex = GI->CurrentStageIndex;
+		UE_LOG(LogTemp,Warning,TEXT("GameState CurrentStateIndex : %d | GameInst StageIndex : %d"),CurrentStageIndex,GI->CurrentStageIndex);
 	}
 }
 
 void AMyGameState::StartStage(int32 StageIndex)
 {
+	UMyGameInstance* GI = nullptr;
+	GI = Cast<UMyGameInstance>(GetWorld()->GetGameInstance());
+	if (GI)
+	{
+		if(GI->CurrentStageIndex > 3)
+		{
+			GameOver(false);
+		}
+	}
+	
 	for (AActor* SpawnCount : SpawnVolumeArr)
 	{
 		if (ASpawnVolume* SpawnVolumes = Cast<ASpawnVolume>(SpawnCount))
@@ -38,10 +52,13 @@ void AMyGameState::StartStage(int32 StageIndex)
 	
 	if (Widget_StageInfo)
 	{
-		Widget_StageInfoInst = CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(),Widget_StageInfo);
+		if (!Widget_StageInfoInst) Widget_StageInfoInst = CreateWidget<UStageNotifyWidget>(GetWorld()->GetFirstPlayerController(),Widget_StageInfo);
+		
 		if (Widget_StageInfoInst)
 		{
 			Widget_StageInfoInst->AddToViewport();
+			Widget_StageInfoInst->UpdateStageInfoText(GI->CurrentStageIndex);
+			
 			GetWorldTimerManager().SetTimer(StageWidgetTimerHandle,[this]()
 			{
 				Widget_StageInfoInst->RemoveFromParent();
@@ -72,10 +89,12 @@ void AMyGameState::StartWave(int32 WaveIndex)
 {
 	if (Widget_WaveInfo)
 	{
-		Widget_WaveInfoInst = CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(),Widget_WaveInfo);
+		Widget_WaveInfoInst = CreateWidget<UWaveNotifyWidget>(GetWorld()->GetFirstPlayerController(),Widget_WaveInfo);
 		if (Widget_WaveInfoInst)
 		{
 			Widget_WaveInfoInst->AddToViewport();
+			Widget_WaveInfoInst->UpdateWaveInfoText(CurrentWaveIndex);
+			
 			GetWorldTimerManager().SetTimer(WaveWidgetTimerHandle,[this]()
 			{
 				Widget_WaveInfoInst->RemoveFromParent();
@@ -97,6 +116,33 @@ void AMyGameState::EndWave()
 	ASpawnVolume* SpawnVolume = Cast<ASpawnVolume>(SpawnVolumeArr[CurrentWaveIndex - 1]);
 	RemainingWaveZombieCount = SpawnVolume->GetSpawnCount(CurrentWaveIndex);
 	StartWave(CurrentWaveIndex);
+}
+
+void AMyGameState::GameOver(bool bIsDead)
+{
+	if (Widget_GameOver)
+	{
+		Widget_GameOverInst = CreateWidget<UGameOverWidget>(GetWorld()->GetFirstPlayerController(),Widget_GameOver);
+		if (Widget_GameOverInst)
+		{
+			Widget_GameOverInst->AddToViewport();
+			//TODO:: 플레이어가 죽었는지 정상적으로 클리어가 됬는지에 따른 GameOverWidget Text값 조정
+			if (!bIsDead)
+			{
+				UE_LOG(LogTemp,Warning,TEXT("게임 클리어!!"));
+			}
+			else
+			{
+				UE_LOG(LogTemp,Warning,TEXT("게임 오버..."));
+				if (OnPlayerDead.IsBound())
+				{
+					OnPlayerDead.Broadcast(bIsDead);
+				}
+			}
+		}
+	}
+	
+	
 }
 
 void AMyGameState::OnDeadZombie()

@@ -4,6 +4,12 @@
 #include "GameFramework/GameState.h"
 #include "MyGameState.generated.h"
 
+class UGameOverWidget;
+class UWaveNotifyWidget;
+class UStageNotifyWidget;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerDead, bool, bIsPlayerDead);
+
 UCLASS()
 class NBC_DOWORK_08_RE_API AMyGameState : public AGameState
 {
@@ -14,6 +20,10 @@ public:
 	void OnDeadZombie();
 	void RegisterSpawnVolume(AActor* SpawnVolume);
 	void RegisterWaveGate(AActor* WaveGate);
+	void GameOver(bool bIsDead);
+	
+	UPROPERTY()
+	FOnPlayerDead OnPlayerDead;
 protected:
 	virtual void BeginPlay() override;
 	
@@ -30,14 +40,20 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Map")
 	TArray<FName> LevelNameArr;
 	
+#pragma region Widget
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
 	TSubclassOf<UUserWidget> Widget_WaveInfo;
 	UPROPERTY()
-	TObjectPtr<UUserWidget> Widget_WaveInfoInst;
+	TObjectPtr<UWaveNotifyWidget> Widget_WaveInfoInst;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
 	TSubclassOf<UUserWidget> Widget_StageInfo;
 	UPROPERTY()
-	TObjectPtr<UUserWidget> Widget_StageInfoInst;
+	TObjectPtr<UStageNotifyWidget> Widget_StageInfoInst;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Widget")
+	TSubclassOf<UUserWidget> Widget_GameOver;
+	UPROPERTY()
+	TObjectPtr<UGameOverWidget> Widget_GameOverInst;
+#pragma endregion
 	
 private:
 	int32 CurrentStageIndex;

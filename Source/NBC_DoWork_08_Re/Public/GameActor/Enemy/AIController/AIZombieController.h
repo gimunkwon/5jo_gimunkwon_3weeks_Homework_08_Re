@@ -32,6 +32,8 @@ protected:
 	
 	UFUNCTION()
 	void OnTargetPerceived(AActor* Actor, FAIStimulus Stimulus);
+	UFUNCTION()
+	void OnPlayerDead(bool bIsDead);
 	
 public:
 	virtual void Tick(float DeltaTime) override;

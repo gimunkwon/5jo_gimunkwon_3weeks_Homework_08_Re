@@ -10,6 +10,7 @@ void UMyPlayerAnimInst::NativeInitializeAnimation()
 	{
 		MyOwnerInst = Cast<AMyPlayer>(TryGetPawnOwner());
 	}
+	bIsPlayerDead = false;
 }
 
 void UMyPlayerAnimInst::NativeUpdateAnimation(float DeltaSeconds)
