@@ -8,6 +8,8 @@ class UGameOverWidget;
 class UWaveNotifyWidget;
 class UStageNotifyWidget;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerDead, bool, bIsPlayerDead);
+
 UCLASS()
 class NBC_DOWORK_08_RE_API AMyGameState : public AGameState
 {
@@ -19,6 +21,9 @@ public:
 	void RegisterSpawnVolume(AActor* SpawnVolume);
 	void RegisterWaveGate(AActor* WaveGate);
 	void GameOver(bool bIsDead);
+	
+	UPROPERTY()
+	FOnPlayerDead OnPlayerDead;
 protected:
 	virtual void BeginPlay() override;
 	

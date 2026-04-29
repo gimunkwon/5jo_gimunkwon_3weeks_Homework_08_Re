@@ -3,6 +3,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "DataTable/Zombie/DT_ZombieStat.h"
 #include "GameActor/Enemy/MyZombie.h"
+#include "Global/MyGameState.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AIPerceptionTypes.h"
 #include "Perception/AISenseConfig_Sight.h"
@@ -16,12 +17,10 @@ AAIZombieController::AAIZombieController()
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 }
 
-
 void AAIZombieController::BeginPlay()
 {
 	Super::BeginPlay();
 }
-
 
 void AAIZombieController::OnPossess(APawn* InPawn)
 {
@@ -55,7 +54,11 @@ void AAIZombieController::OnPossess(APawn* InPawn)
 			MyOwner->InitializeStat(RowHandle);
 		}
 	}
-	
+	if (AMyGameState* GS = Cast<AMyGameState>(GetWorld()->GetGameState()))
+	{
+		GS->OnPlayerDead.AddDynamic(this, &AAIZombieController::OnPlayerDead);
+		UE_LOG(LogTemp,Warning,TEXT("바인딩완료!!"));
+	}
 	if (RunBehaviorTree(BT_Data))
 	{
 		// UE_LOG(LogTemp,Warning,TEXT("비헤이비어트리 작동"));
@@ -73,7 +76,6 @@ void AAIZombieController::Tick(float DeltaTime)
 	// }
 }
 
-
 void AAIZombieController::OnTargetPerceived(AActor* Actor, FAIStimulus Stimulus)
 {
 	if (Actor->ActorHasTag(TEXT("Player")))
@@ -89,6 +91,11 @@ void AAIZombieController::OnTargetPerceived(AActor* Actor, FAIStimulus Stimulus)
 			GetBlackboardComponent()->ClearValue(TEXT("TargetActor"));
 		}
 	}
+}
+
+void AAIZombieController::OnPlayerDead(bool bIsDead)
+{
+	GetBlackboardComponent()->SetValueAsBool(TEXT("bIsPlayerDead"),bIsDead);
 }
 
 

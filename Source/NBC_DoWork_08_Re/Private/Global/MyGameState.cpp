@@ -134,9 +134,14 @@ void AMyGameState::GameOver(bool bIsDead)
 			else
 			{
 				UE_LOG(LogTemp,Warning,TEXT("게임 오버..."));
+				if (OnPlayerDead.IsBound())
+				{
+					OnPlayerDead.Broadcast(bIsDead);
+				}
 			}
 		}
 	}
+	
 	
 }
 
