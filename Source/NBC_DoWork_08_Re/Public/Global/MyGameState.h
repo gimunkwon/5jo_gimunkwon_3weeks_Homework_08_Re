@@ -10,6 +10,8 @@ class UStageNotifyWidget;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerDead, bool, bIsPlayerDead);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStartWave, int32, CurrentStageIndex, int32, CurrentWaveIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStageZombieCount, int32, CurrentStageZombieCount);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWaveZombieCount, int32, CurrentWaveZombieCount);
 
 UCLASS()
 class NBC_DOWORK_08_RE_API AMyGameState : public AGameState
@@ -27,6 +29,10 @@ public:
 	FOnPlayerDead OnPlayerDead;
 	UPROPERTY()
 	FOnStartWave OnStartWave;
+	UPROPERTY()
+	FOnStageZombieCount OnStageZombieCount;
+	UPROPERTY()
+	FOnWaveZombieCount OnWaveZombieCount;
 protected:
 	virtual void BeginPlay() override;
 	
@@ -66,4 +72,5 @@ private:
 	
 	FTimerHandle StageWidgetTimerHandle;
 	FTimerHandle WaveWidgetTimerHandle;
+	FTimerHandle ChangeLevelTimerHandle;
 };

@@ -3,6 +3,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/OverlapResult.h"
 #include "GameActor/Player/Animations/MyPlayerAnimInst.h"
@@ -131,13 +133,21 @@ void AMyPlayer::Rotate()
 			FVector StartPos = GetActorLocation();
 			FVector TargetPos = HitResult.Location;
 			
-			FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartPos,TargetPos);
-			FRotator NewRotation(0.f,LookAtRotation.Yaw,0.f);
+			FVector Dir = (TargetPos - StartPos);
+			Dir.Z = 0.f;
 			
-			FRotator CurrentRoation = GetActorRotation();
-			FRotator SmoothRotation = FMath::RInterpTo(CurrentRoation, NewRotation, GetWorld()->GetDeltaSeconds(), InterpSpeed);
+			if (Dir.IsNearlyZero()) return;
+			
+			FRotator TargetRotation = Dir.Rotation();
+			FRotator CurrentRotation = GetActorRotation();
+			
+			FRotator SmoothRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), InterpSpeed);
+			
+			SmoothRotation.Pitch = 0.f;
+			SmoothRotation.Roll = 0.f;
 			
 			GetCharacterMovement()->bOrientRotationToMovement = false;
+			
 			SetActorRotation(SmoothRotation);
 		}
 	}
@@ -272,8 +282,19 @@ void AMyPlayer::GunAttack(UAnimInstance* MyAnimInst)
 				FVector LaunchDir = WeaponGun->GetWeaponMesh()->GetSocketRotation(TEXT("MuzzleSocket")).Vector();
 				float MaxDistance = CurrentGun->GetGunMaxDistance();
 				FVector EndPos = StartPos + (LaunchDir * MaxDistance);
+				
+				FRotator FixedRotation = LaunchDir.Rotation();
+				FixedRotation.Yaw += 45.f;
 					
-				WeaponGun->bIsfire();
+				if (WeaponGun->bIsfire())
+				{
+					if (NS_MuzzleEffect)
+					{
+						NS_MuzzleEffectComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
+							NS_MuzzleEffect, WeaponGun->GetWeaponMesh(), TEXT("MuzzleSocket"), 
+							StartPos,FixedRotation,EAttachLocation::KeepWorldPosition,true);
+					}
+				}
 				UE_LOG(LogTemp,Warning,TEXT("Current Ammo: %d"),WeaponGun->GetCurrentAmmo());
 				
 				if (AMyPlayerController* PC = Cast<AMyPlayerController>(GetController()))

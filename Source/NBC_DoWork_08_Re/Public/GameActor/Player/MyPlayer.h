@@ -5,6 +5,8 @@
 #include "Weapon/GunWeapon.h"
 #include "MyPlayer.generated.h"
 
+class UNiagaraComponent;
+class UNiagaraSystem;
 class AGunWeapon;
 struct FInputActionValue;
 class UCameraComponent;
@@ -88,6 +90,13 @@ protected:
 	TObjectPtr<USoundBase> Sound_GunDryFire;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Sound")
 	TObjectPtr<USoundBase> Sound_Death;
+#pragma endregion 
+	
+#pragma region Niagara
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Niagara")
+	TObjectPtr<UNiagaraSystem> NS_MuzzleEffect;
+	UPROPERTY()
+	TObjectPtr<UNiagaraComponent> NS_MuzzleEffectComp;
 #pragma endregion 
 	
 private:

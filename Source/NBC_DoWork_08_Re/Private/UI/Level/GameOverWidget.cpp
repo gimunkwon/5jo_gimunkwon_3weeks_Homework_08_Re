@@ -49,5 +49,6 @@ void UGameOverWidget::OnReturnStartClicked()
 void UGameOverWidget::OnExitClicked()
 {
 	UE_LOG(LogTemp,Warning,TEXT("게임종료"));
+	UKismetSystemLibrary::QuitGame(GetWorld(),GetWorld()->GetFirstPlayerController(),EQuitPreference::Quit, false);
 	
 }

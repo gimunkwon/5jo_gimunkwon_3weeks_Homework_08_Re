@@ -14,6 +14,8 @@ void UPlayerHUDWidget::NativeConstruct()
 	if (AMyGameState* GS = Cast<AMyGameState>(GetWorld()->GetGameState()))
 	{
 		GS->OnStartWave.AddDynamic( this, &UPlayerHUDWidget::UpdateStageAndWaveText);
+		GS->OnStageZombieCount.AddDynamic(this, &UPlayerHUDWidget::UdpateRemainStageZombieCountText);
+		GS->OnWaveZombieCount.AddDynamic(this, &UPlayerHUDWidget::UdpateRemainWaveZombieCountText);
 	}
 }
 
@@ -49,6 +51,24 @@ void UPlayerHUDWidget::UpdateAmmoText(int32 CurrentAmmo, int32 MaxAmmo)
 	{
 		FString AmmoText = FString::Printf(TEXT("%d / %d"),CurrentAmmo,MaxAmmo);
 		Text_GunAmmo->SetText(FText::FromString(AmmoText));
+	}
+}
+
+void UPlayerHUDWidget::UdpateRemainStageZombieCountText(int32 RemainZombieCount)
+{
+	if (Text_RemainStageZombieCount)
+	{
+		FString RemainZombie = FString::Printf(TEXT("현재 스테이지 남은 좀비 수: %d"),RemainZombieCount);
+		Text_RemainStageZombieCount->SetText(FText::FromString(RemainZombie));
+	}
+}
+
+void UPlayerHUDWidget::UdpateRemainWaveZombieCountText(int32 RemainZombieCount)
+{
+	if (Text_RemainWaveZombieCount)
+	{
+		FString RemainZombie = FString::Printf(TEXT("현재 웨이브 남은 좀비 수: %d"),RemainZombieCount);
+		Text_RemainWaveZombieCount->SetText(FText::FromString(RemainZombie));
 	}
 }
 

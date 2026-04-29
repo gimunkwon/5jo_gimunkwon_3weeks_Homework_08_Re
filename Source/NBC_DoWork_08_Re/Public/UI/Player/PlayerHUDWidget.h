@@ -19,7 +19,10 @@ public:
 	void UpdatePlayerHPBar(float MaxHP, float CurrentHP);
 	void UpdateSelectBorder(EPlayerBattleState CurrentState);
 	void UpdateAmmoText(int32 CurrentAmmo, int32 MaxAmmo);
-	
+	UFUNCTION()
+	void UdpateRemainStageZombieCountText(int32 RemainZombieCount);
+	UFUNCTION()
+	void UdpateRemainWaveZombieCountText(int32 RemainZombieCount);
 	UFUNCTION()
 	void UpdateStageAndWaveText(int32 CurrentStage, int32 CurrentWave);
 protected:
@@ -33,4 +36,8 @@ protected:
 	TObjectPtr<UTextBlock> Text_GunAmmo;
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Text_StageAWave;
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UTextBlock> Text_RemainStageZombieCount;
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UTextBlock> Text_RemainWaveZombieCount;
 };
