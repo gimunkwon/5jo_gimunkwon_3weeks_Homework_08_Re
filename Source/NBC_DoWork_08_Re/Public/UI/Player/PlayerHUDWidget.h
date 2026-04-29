@@ -14,9 +14,13 @@ class NBC_DOWORK_08_RE_API UPlayerHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
+	virtual void NativeConstruct() override;
+	
 	void UpdatePlayerHPBar(float MaxHP, float CurrentHP);
 	void UpdateSelectBorder(EPlayerBattleState CurrentState);
 	void UpdateAmmoText(int32 CurrentAmmo, int32 MaxAmmo);
+	
+	UFUNCTION()
 	void UpdateStageAndWaveText(int32 CurrentStage, int32 CurrentWave);
 protected:
 	UPROPERTY(meta=(BindWidget))
