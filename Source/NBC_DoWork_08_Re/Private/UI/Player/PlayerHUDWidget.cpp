@@ -39,3 +39,12 @@ void UPlayerHUDWidget::UpdateAmmoText(int32 CurrentAmmo, int32 MaxAmmo)
 		Text_GunAmmo->SetText(FText::FromString(AmmoText));
 	}
 }
+
+void UPlayerHUDWidget::UpdateStageAndWaveText(int32 CurrentStage, int32 CurrentWave)
+{
+	if (Text_StageAWave)
+	{
+		FString StageAWaveString = FString::Printf(TEXT("Stage : %d | Wave : %d"),CurrentStage,CurrentWave);
+		Text_StageAWave->SetText(FText::FromString(StageAWaveString));
+	}
+}
